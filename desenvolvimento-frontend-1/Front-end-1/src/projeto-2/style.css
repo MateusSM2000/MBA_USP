@@ -1,0 +1,138 @@
+:root {
+    --cor-fundo: #EEEEEE;
+    --cor-principal: #31363F;
+    --cor-destaque: #76ABAE;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.container {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+header {
+    background-color: var(--cor-principal);
+    color: var(--cor-fundo);
+    text-align: center;
+    padding: 1.25rem;
+}
+
+body {
+    background-color: var(--cor-fundo);
+    color: var(--cor-principal);
+}
+
+nav {
+    margin-top: 0;
+    background-color: var(--cor-destaque);
+    width: 100%;
+    height: 2.5rem
+}
+
+nav ul {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 0.65rem 0;
+}
+
+nav ul li {
+    margin: 0 1.5rem;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: var(--cor-principal);
+    font-weight: 700;
+}
+
+nav ul li a:hover {
+    color: var(--cor-fundo);
+    font-weight: bold;
+    transition: all 0.3s ease;
+
+}
+
+.produtos {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding: 5rem;
+    flex-wrap: wrap;
+}
+
+.card {
+    background-color: #EEEEEE;
+    border: 1px solid #ccc;
+    border-radius: .5rem;
+    padding: 1.5rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: calc(22%);
+}
+
+.card p {
+    margin-top: 0.5rem;
+    font-size: 1.2rem;
+
+}
+
+.card img {
+    width: 100%;
+    margin-bottom: 0.5rem;
+    border-radius: 0.3rem;
+
+}
+
+.card button {
+    background-color: var(--cor-destaque);
+    color: white;
+    border: none;
+    margin-top : 1rem;
+    padding: 0.65rem;
+    font-weight: bold;
+}
+
+.card button:hover {
+    background-color: var(--cor-principal)
+}
+
+footer {
+    background-color: var(--cor-principal);
+    color: var(--cor-fundo);
+    text-align: center;
+    padding: 1rem;
+    width: 100%;
+    bottom: 0;
+}
+
+@media (max-width: 1024px) {
+    .card {
+        width: calc(33.33%);
+    }
+}
+
+@media (max-width: 768px) {
+    .card {
+        width: calc(50%);
+    }
+
+    .card h2 {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .card {
+        width: calc(100%);
+    }
+}
