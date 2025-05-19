@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Changa:wght@200..800&display=swap');
+
+
+body {
+    text-align: center;
+    margin-top: 4rem;
+    font-family: "Changa", sans-serif;
+}
+
+img {
+    border-radius: 6rem;
+}
