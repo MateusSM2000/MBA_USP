@@ -1,0 +1,182 @@
+[
+  {
+    "nome": "Camiseta Básica",
+    "preco": 67.25,
+    "imagem": "assets/images/roupas.jpeg",
+    "categoria": "Roupas"
+  },
+  {
+    "nome": "Livro JavaScript Moderno",
+    "preco": 145.50,
+    "imagem": "assets/images/livros.jpeg",
+    "categoria": "Livros"
+  },
+  {
+    "nome": "Placa de Vídeo RTX 3060",
+    "preco": 2399.99,
+    "imagem": "assets/images/eletronicos.jpeg",
+    "categoria": "Eletrônicos"
+  },
+  {
+    "nome": "Teclado Mecânico RGB",
+    "preco": 349.00,
+    "imagem": "assets/images/eletronicos.jpeg",
+    "categoria": "Eletrônicos"
+  },
+  {
+    "nome": "Calça Jeans",
+    "preco": 149.90,
+    "imagem": "assets/images/roupas.jpeg",
+    "categoria": "Roupas"
+  },
+  {
+    "nome": "Livro Clean Code",
+    "preco": 119.90,
+    "imagem": "assets/images/livros.jpeg",
+    "categoria": "Livros"
+  },
+  {
+    "nome": "Volante Logitech G29",
+    "preco": 1899.00,
+    "imagem": "assets/images/eletronicos.jpeg",
+    "categoria": "Eletrônicos"
+  },
+  {
+    "nome": "Tênis Esportivo Nike",
+    "preco": 299.90,
+    "imagem": "assets/images/roupas.jpeg",
+    "categoria": "Roupas"
+  },
+  {
+    "nome": "Livro de Python para Iniciantes",
+    "preco": 84.00,
+    "imagem": "assets/images/livros.jpeg",
+    "categoria": "Livros"
+  },
+  {
+    "nome": "Monitor 24\" Full HD",
+    "preco": 799.00,
+    "imagem": "assets/images/eletronicos.jpeg",
+    "categoria": "Eletrônicos"
+  },
+  {
+    "nome": "Jaqueta Corta-Vento",
+    "preco": 199.00,
+    "imagem": "assets/images/roupas.jpeg",
+    "categoria": "Roupas"
+  },
+  {
+    "nome": "Livro Estruturas de Dados",
+    "preco": 92.75,
+    "imagem": "assets/images/livros.jpeg",
+    "categoria": "Livros"
+  },
+  {
+    "nome": "Mouse Gamer com RGB",
+    "preco": 149.90,
+    "imagem": "assets/images/eletronicos.jpeg",
+    "categoria": "Eletrônicos"
+  },
+  {
+    "nome": "Camisa Polo Azul",
+    "preco": 69.90,
+    "imagem": "assets/images/roupas.jpeg",
+    "categoria": "Roupas"
+  },
+  {
+    "nome": "Processador Ryzen 5 5600X",
+    "preco": 1349.00,
+    "imagem": "assets/images/eletronicos.jpeg",
+    "categoria": "Eletrônicos"
+  },
+  {
+    "nome": "Shorts Esportivo Masculino",
+    "preco": 89.90,
+    "imagem": "assets/images/roupas.jpeg",
+    "categoria": "Roupas"
+  },
+  {
+    "nome": "Livro Design Patterns",
+    "preco": 99.00,
+    "imagem": "assets/images/livros.jpeg",
+    "categoria": "Livros"
+  },
+  {
+    "nome": "Gabinete Gamer com LED",
+    "preco": 419.90,
+    "imagem": "assets/images/eletronicos.jpeg",
+    "categoria": "Eletrônicos"
+  },
+  {
+    "nome": "Vestido Casual Feminino",
+    "preco": 129.90,
+    "imagem": "assets/images/roupas.jpeg",
+    "categoria": "Roupas"
+  },
+  {
+    "nome": "Fone de Ouvido Bluetooth",
+    "preco": 229.00,
+    "imagem": "assets/images/eletronicos.jpeg",
+    "categoria": "Eletrônicos"
+  },
+  {
+    "nome": "Livro HTML e CSS",
+    "preco": 64.00,
+    "imagem": "assets/images/livros.jpeg",
+    "categoria": "Livros"
+  },
+  {
+    "nome": "Blusa de Frio com Capuz",
+    "preco": 139.90,
+    "imagem": "assets/images/roupas.jpeg",
+    "categoria": "Roupas"
+  },
+  {
+    "nome": "HD SSD 1TB",
+    "preco": 389.90,
+    "imagem": "assets/images/eletronicos.jpeg",
+    "categoria": "Eletrônicos"
+  },
+  {
+    "nome": "Livro Refatoração",
+    "preco": 110.00,
+    "imagem": "assets/images/livros.jpeg",
+    "categoria": "Livros"
+  },
+  {
+    "nome": "Saia Jeans Feminina",
+    "preco": 89.90,
+    "imagem": "assets/images/roupas.jpeg",
+    "categoria": "Roupas"
+  },
+  {
+    "nome": "You Don't Know JS",
+    "preco": 98.50,
+    "imagem": "assets/images/livros.jpeg",
+    "categoria": "Livros"
+  },
+  {
+    "nome": "Notebook i7 16GB RAM",
+    "preco": 4299.00,
+    "imagem": "assets/images/eletronicos.jpeg",
+    "categoria": "Eletrônicos"
+  },
+  {
+    "nome": "Algoritmos: Teoria e Prática",
+    "preco": 119.00,
+    "imagem": "assets/images/livros.jpeg",
+    "categoria": "Livros"
+  },
+  {
+    "nome": "Moletom Capuz Unissex",
+    "preco": 149.90,
+    "imagem": "assets/images/roupas.jpeg",
+    "categoria": "Roupas"
+  },
+  {
+    "nome": "Linguagens Funcionais de Programação",
+    "preco": 89.00,
+    "imagem": "assets/images/livros.jpeg",
+    "categoria": "Livros"
+  }
+]

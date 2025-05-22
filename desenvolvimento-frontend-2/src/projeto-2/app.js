@@ -1,21 +1,3 @@
-let produtos = [
-    {
-        nome: 'Tênis 1',
-        preco: 319.99,
-        imagem: 'img.jpeg',
-    },
-    {
-        nome: 'Tênis 2',
-        preco: 219.99,
-        imagem: 'img.jpeg',
-    },
-    {
-        nome: 'Tênis 3',
-        preco: 178.19,
-        imagem: 'img.jpeg',
-    }
-]
-
 console.log(produtos)
 
 let secaoProdutos = document.querySelector('.produtos')
@@ -30,3 +12,5 @@ for (let produto of produtos) {
     `
 secaoProdutos.appendChild(div)
 }
+
+console.log(`Quantidade de produtos: ${produtos.length}`)
