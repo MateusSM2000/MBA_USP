@@ -1,0 +1,23 @@
+POST http://localhost:8000/api/products
+Content-Type: application/json
+
+{
+  "name": "Adidas Samba",
+  "description": "Calçados",
+  "price": 1149.59
+}
+###
+
+DELETE http://localhost:8000/api/products/4
+###
+
+PUT http://localhost:8000/api/products/3
+Content-Type: application/json
+
+{
+  "id": 3,
+  "name": "Notebook",
+  "description": "Eletrônicos",
+  "price": 4928.97
+}
+###
