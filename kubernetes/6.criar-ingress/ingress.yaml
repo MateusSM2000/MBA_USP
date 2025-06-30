@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: servidor-python-ingress # Nome do recurso Ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: / # Anotação específica para reescrita de URL
+spec:
+  rules:
+    - http: # Regra aplicada para solicitações HTTP
+        paths:
+          - pathType: Prefix # Tipo de correspondência de caminho (prefixo)
+            path: / # Caminho correspondente "/"
+            backend:
+              service:
+                name: servidor-python-service # Nome do serviço de backend
+                port:
+                  number: 80 # Número da porta do serviço
+

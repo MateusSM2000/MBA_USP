@@ -1,0 +1,29 @@
+apiVersion: apps/v1 # Versão da API utilizada para o recurso
+kind: Deployment # Tipo de recurso (Deployment no caso)
+metadata:
+  name: servidor-python # Nome atribuído ao recurso
+  labels:
+    app: servidor-python # Rótulo (label) associado ao recurso
+spec:
+  selector:
+    matchLabels:
+      app: servidor-python # Rótulo correspondente para seleção
+  replicas: 5 # Número desejado de réplicas do pod
+  template:
+    metadata:
+      labels:
+        app: servidor-python # Rótulo associado ao pod no template
+    spec:
+      containers:
+        - name: servidor-python # Nome do contêiner
+          image: helderprado/servidor-python:1.0 # Imagem do contêiner a ser utilizada
+          imagePullPolicy: Always # Política de quando o container deve ser atualizado
+
+          resources:
+            limits:
+              memory: "100Mi" # Limite máximo de memória para o contêiner
+              cpu: "100m" # Limite máximo de CPU para o contêiner
+
+          envFrom:
+            - secretRef:
+                name: servidor-python-secrets

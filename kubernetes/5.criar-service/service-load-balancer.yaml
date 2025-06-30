@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: servidor-python-service
+spec:
+  selector:
+    app: servidor-python # seleciona todos os pods com label name igual a servidor-python
+  type: LoadBalancer
+  ports:
+    - name: servidor-python-service
+      port: 80
+      targetPort: 8000
+      protocol: TCP

@@ -1,0 +1,34 @@
+# Manifesto para Deployment - cria instâncias da aplicação
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: teste-carga-deployment # Nome do Deployment
+spec:
+  replicas: 1 # Uma réplica da aplicação
+  selector:
+    matchLabels:
+      app: teste-carga # Seleciona Pods com a label "app=teste-carga"
+  template:
+    metadata:
+      labels:
+        app: teste-carga # Labels para as Pods criadas por este Deployment
+    spec:
+      containers:
+        - name: teste-carga # Nome do container
+          image: helderprado/teste-carga:1.0 # Imagem do container (substitua conforme necessário)
+          imagePullPolicy: Always # Política para sempre buscar a imagem mais recente
+
+---
+# Manifesto para Service - expõe a aplicação
+apiVersion: v1
+kind: Service
+metadata:
+  name: teste-carga-svc # Nome do Service
+spec:
+  type: ClusterIP # Tipo de Service (ClusterIP neste caso)
+  selector:
+    app: teste-carga # Seleciona Pods com a label "app=teste-carga"
+  ports:
+    - protocol: TCP # Protocolo TCP
+      port: 80 # Porta no Service
+      targetPort: 8089 # Porta nas Pods de destino
