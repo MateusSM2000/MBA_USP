@@ -1,0 +1,27 @@
+apiVersion: autoscaling/v2 # Versão da API
+kind: HorizontalPodAutoscaler # tipo do recurso
+
+# Metadados para identificar o HPA
+metadata:
+  name: servidor-python # Nome do HPA
+
+# Especificações para o HPA
+spec:
+  # Referência para o recurso que será escalonado
+  scaleTargetRef:
+    apiVersion: apps/v1 # Versão da API do recurso de destino
+    kind: Deployment # Tipo do recurso de destino
+    name: servidor-python # Nome do recurso de destino (Deployment)
+
+  minReplicas: 1 # Configuração do número mínimo de réplicas
+  maxReplicas: 10 # Configuração do número máximo de réplicas
+
+  # Configuração das métricas usadas para o escalonamento automático
+  metrics:
+    - type: Resource # Tipo da métrica (no caso, métricas de recurso)
+      resource:
+        name: cpu # Nome do recurso (CPU no caso)
+        target:
+          type: Utilization # Tipo de meta para a métrica (Utilização de recursos)
+          averageUtilization: 50 # Meta de utilização média de CPU (50%)
+

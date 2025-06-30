@@ -1,0 +1,14 @@
+apiVersion: v1 # Versão da API utilizada para o recurso
+kind: Service # Tipo de recurso (Service no caso)
+metadata:
+  name: servidor-python-service # Nome atribuído ao serviço
+spec:
+  selector:
+    app: servidor-python # Seletor para associar o serviço aos pods com label 'app: servidor-python'
+  type: ClusterIP # Tipo de serviço (ClusterIP no caso)
+  ports:
+    - name: servidor-python-service # Nome atribuído à porta do serviço
+      port: 80 # Número da porta do serviço
+      targetPort: 8000 # Número da porta alvo nos pods
+      protocol: TCP # Protocolo utilizado (TCP no caso)
+
