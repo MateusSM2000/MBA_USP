@@ -7,7 +7,7 @@ metadata:
 spec:
   containers:
     - name: servidor-python
-      image: helderprado/servidor-python:2.0
+      image: mateussmesquita/servidor-python:1.0
 
       ports:
         - containerPort: 8000
