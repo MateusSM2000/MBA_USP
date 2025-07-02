@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: servidor-python # Nome do contêiner
-          image: mateussmesquita/servidor-python:1.0 # Imagem do contêiner a ser utilizada
+          image: mateussmesquita/servidor-python:2.0 # Imagem do contêiner a ser utilizada
           imagePullPolicy: Always # Política de quando o container deve ser atualizado
 
           resources:
