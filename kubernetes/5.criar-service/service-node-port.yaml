@@ -10,3 +10,4 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 8000
+      nodePort: 9000 # n conseguimos acessar sem dar port forward pq estamos rodando esse kubernetes pelo kind (docker). caso contrario conseguiriamos
