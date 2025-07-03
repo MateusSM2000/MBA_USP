@@ -11,3 +11,5 @@ spec:
       port: 80
       targetPort: 8000
       protocol: TCP
+
+# se o kubernetes fosse gerenciado por cloud, conseguiriamos acessar os pods com o service por meio do load balancer
