@@ -1,3 +1,4 @@
+na pratica n precisa criar yaml e dar apply em pods e replicasets, pois o yaml do deployment já cria eles
 ## Instalando o Kind nos diversos Sistemas Operacionais
 
 ### 🪟 Windows
