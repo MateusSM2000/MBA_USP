@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Novo Carro - Sistema de Carros</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navegação -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/dashboard">
+                <i class="fas fa-car me-2"></i>
+                Sistema de Carros
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard">
+                            <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/cars">
+                            <i class="fas fa-list me-1"></i>Carros
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/cars/new">
+                            <i class="fas fa-plus me-1"></i>Novo Carro
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/search">
+                            <i class="fas fa-search me-1"></i>Buscar
+                        </a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i>
+                            <%= user.nome %>
+                            <span class="badge bg-secondary ms-1"><%= user.tipo_usuario %></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <form method="POST" action="/logout" class="d-inline">
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Sair
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mensagens Flash -->
+    <% if (locals.success && success.length > 0) { %>
+        <div class="alert alert-success alert-dismissible fade show m-3" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <%= success %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    <% } %>
+
+    <% if (locals.error && error.length > 0) { %>
+        <div class="alert alert-danger alert-dismissible fade show m-3" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <%= error %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    <% } %>
+
+    <!-- Conteúdo Principal -->
+    <main class="container my-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="h2 mb-2">Cadastrar Novo Carro</h1>
+                        <p class="text-muted">Preencha os dados do carro</p>
+                    </div>
+                    <a href="/cars" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Voltar
+                    </a>
+                </div>
+
+                <% if (errors.length > 0) { %>
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Corrija os seguintes erros:</strong>
+                        <ul class="mb-0 mt-2">
+                            <% errors.forEach(error => { %>
+                                <li><%= error %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <% } %>
+
+                <div class="card shadow">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">Dados do Carro</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="/cars">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="modelo" class="form-label">Modelo *</label>
+                                    <input type="text" class="form-control" id="modelo" name="modelo" value="<%= car.modelo || '' %>" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="fabricante" class="form-label">Fabricante *</label>
+                                    <select class="form-select" id="fabricante" name="fabricante" required>
+                                        <option value="">Selecione...</option>
+                                        <% fabricantes.forEach(fabricante => { %>
+                                            <option value="<%= fabricante %>" <%= car.fabricante === fabricante ? 'selected' : '' %>><%= fabricante %></option>
+                                        <% }); %>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="tipo" class="form-label">Tipo *</label>
+                                    <select class="form-select" id="tipo" name="tipo" required>
+                                        <option value="">Selecione...</option>
+                                        <% tipos.forEach(tipo => { %>
+                                            <option value="<%= tipo %>" <%= car.tipo === tipo ? 'selected' : '' %>><%= tipo %></option>
+                                        <% }); %>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="marca_modelo" class="form-label">Marca/Modelo *</label>
+                                    <input type="text" class="form-control" id="marca_modelo" name="marca_modelo" value="<%= car.marca_modelo || '' %>" required>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="ano_fabricacao" class="form-label">Ano de Fabricação *</label>
+                                    <input type="number" class="form-control" id="ano_fabricacao" name="ano_fabricacao" value="<%= car.ano_fabricacao || '' %>" min="1900" max="<%= new Date().getFullYear() + 1 %>" required>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="cor" class="form-label">Cor</label>
+                                    <input type="text" class="form-control" id="cor" name="cor" value="<%= car.cor || '' %>">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="combustivel" class="form-label">Combustível</label>
+                                    <select class="form-select" id="combustivel" name="combustivel">
+                                        <% combustiveis.forEach(combustivel => { %>
+                                            <option value="<%= combustivel %>" <%= car.combustivel === combustivel ? 'selected' : '' %>><%= combustivel %></option>
+                                        <% }); %>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="preco" class="form-label">Preço</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">R$</span>
+                                        <input type="number" class="form-control" id="preco" name="preco" value="<%= car.preco || '' %>" min="0" step="0.01">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="quilometragem" class="form-label">Quilometragem</label>
+                                    <input type="number" class="form-control" id="quilometragem" name="quilometragem" value="<%= car.quilometragem || '' %>" min="0">
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label for="observacoes" class="form-label">Observações</label>
+                                    <textarea class="form-control" id="observacoes" name="observacoes" rows="3"><%= car.observacoes || '' %></textarea>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between pt-3 border-top">
+                                <a href="/cars" class="btn btn-outline-secondary">Cancelar</a>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-save me-2"></i>Cadastrar Carro
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="bg-dark text-light py-3 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">
+                <i class="fas fa-car me-2"></i>
+                Sistema de Gerenciamento de Carros &copy; 2024
+            </p>
+            <small class="text-muted">Aplicação Monolítica Educacional</small>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+</html>

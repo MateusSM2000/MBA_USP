@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Carros - Sistema de Carros</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navegação -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/dashboard">
+                <i class="fas fa-car me-2"></i>
+                Sistema de Carros
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard">
+                            <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/cars">
+                            <i class="fas fa-list me-1"></i>Carros
+                        </a>
+                    </li>
+                    <% if (user.tipo_usuario === 'administrador') { %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/cars/new">
+                            <i class="fas fa-plus me-1"></i>Novo Carro
+                        </a>
+                    </li>
+                    <% } %>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/search">
+                            <i class="fas fa-search me-1"></i>Buscar
+                        </a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i>
+                            <%= user.nome %>
+                            <span class="badge bg-secondary ms-1"><%= user.tipo_usuario %></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <form method="POST" action="/logout" class="d-inline">
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Sair
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mensagens Flash -->
+    <% if (locals.success && success.length > 0) { %>
+        <div class="alert alert-success alert-dismissible fade show m-3" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <%= success %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    <% } %>
+
+    <% if (locals.error && error.length > 0) { %>
+        <div class="alert alert-danger alert-dismissible fade show m-3" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <%= error %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    <% } %>
+
+    <!-- Conteúdo Principal -->
+    <main class="container my-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="h2 mb-2">
+                            <i class="fas fa-search text-primary me-2"></i>
+                            Buscar Carros
+                        </h1>
+                        <p class="text-muted">Use os filtros para encontrar carros específicos</p>
+                    </div>
+                    <a href="/cars" class="btn btn-outline-secondary">
+                        <i class="fas fa-list me-2"></i>Ver Todos
+                    </a>
+                </div>
+
+                <!-- Formulário de Busca -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-filter me-2"></i>Filtros de Busca
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="GET" action="/search">
+                            <div class="row">
+                                <div class="col-md-3 mb-3">
+                                    <label for="modelo" class="form-label">Modelo</label>
+                                    <input type="text" class="form-control" id="modelo" name="modelo" value="<%= filters.modelo || '' %>" placeholder="Ex: Civic">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="fabricante" class="form-label">Fabricante</label>
+                                    <select class="form-select" id="fabricante" name="fabricante">
+                                        <option value="">Todos</option>
+                                        <% fabricantes.forEach(fabricante => { %>
+                                            <option value="<%= fabricante %>" <%= filters.fabricante === fabricante ? 'selected' : '' %>><%= fabricante %></option>
+                                        <% }); %>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="tipo" class="form-label">Tipo</label>
+                                    <select class="form-select" id="tipo" name="tipo">
+                                        <option value="">Todos</option>
+                                        <% tipos.forEach(tipo => { %>
+                                            <option value="<%= tipo %>" <%= filters.tipo === tipo ? 'selected' : '' %>><%= tipo %></option>
+                                        <% }); %>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label">Ações</label>
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-search me-2"></i>Buscar
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="ano_min" class="form-label">Ano Mínimo</label>
+                                    <input type="number" class="form-control" id="ano_min" name="ano_min" value="<%= filters.ano_min || '' %>" min="1900" max="<%= new Date().getFullYear() %>">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="ano_max" class="form-label">Ano Máximo</label>
+                                    <input type="number" class="form-control" id="ano_max" name="ano_max" value="<%= filters.ano_max || '' %>" min="1900" max="<%= new Date().getFullYear() %>">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label">Limpar</label>
+                                    <div class="d-grid">
+                                        <a href="/search" class="btn btn-outline-secondary">
+                                            <i class="fas fa-eraser me-2"></i>Limpar
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Resultados -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list me-2"></i>Resultados da Busca
+                        </h5>
+                        <span class="badge bg-primary"><%= totalResults %> resultado(s)</span>
+                    </div>
+                    <div class="card-body">
+                        <% if (cars.length === 0) { %>
+                            <div class="text-center py-5">
+                                <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                                <h4 class="text-muted">Nenhum carro encontrado</h4>
+                                <p class="text-muted">Tente ajustar os filtros de busca</p>
+                            </div>
+                        <% } else { %>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Modelo</th>
+                                            <th>Fabricante</th>
+                                            <th>Tipo</th>
+                                            <th>Ano</th>
+                                            <th>Combustível</th>
+                                            <th>Preço</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% cars.forEach(car => { %>
+                                        <tr>
+                                            <td>
+                                                <strong><%= car.modelo %></strong>
+                                                <% if (car.cor) { %>
+                                                <br><small class="text-muted"><%= car.cor %></small>
+                                                <% } %>
+                                            </td>
+                                            <td><%= car.fabricante %></td>
+                                            <td>
+                                                <span class="badge bg-secondary"><%= car.tipo %></span>
+                                            </td>
+                                            <td><%= car.ano_fabricacao %></td>
+                                            <td>
+                                                <% 
+                                                let badgeClass = 'bg-warning';
+                                                if (car.combustivel === 'Elétrico') badgeClass = 'bg-success';
+                                                else if (car.combustivel === 'Híbrido') badgeClass = 'bg-info';
+                                                %>
+                                                <span class="badge <%= badgeClass %>"><%= car.combustivel %></span>
+                                            </td>
+                                            <td>
+                                                <% if (car.preco) { %>
+                                                R$ <%= parseFloat(car.preco).toLocaleString('pt-BR') %>
+                                                <% } else { %>
+                                                <span class="text-muted">N/A</span>
+                                                <% } %>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group btn-group-sm" role="group">
+                                                    <a href="/cars/<%= car.id %>" class="btn btn-outline-info" title="Ver Detalhes">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <% if (user.tipo_usuario === 'administrador') { %>
+                                                    <a href="/cars/<%= car.id %>/edit" class="btn btn-outline-primary" title="Editar">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <% } %>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="bg-dark text-light py-3 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">
+                <i class="fas fa-car me-2"></i>
+                Sistema de Gerenciamento de Carros &copy; 2024
+            </p>
+            <small class="text-muted">Aplicação Monolítica Educacional</small>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+</html>

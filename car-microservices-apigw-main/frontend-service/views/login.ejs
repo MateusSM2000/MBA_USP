@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistema de Carros</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        .login-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Error Alert -->
+        <% if (typeof error !== 'undefined' && error) { %>
+        <div class="row justify-content-center mb-3">
+            <div class="col-md-6 col-lg-4">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i><%= error %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            </div>
+        </div>
+        <% } %>
+
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <div class="login-card">
+                    <div class="card-body p-5">
+                        <!-- Header -->
+                        <div class="text-center mb-4">
+                            <div class="mb-3">
+                                <i class="fas fa-car fa-3x text-primary"></i>
+                            </div>
+                            <h2 class="fw-bold mb-2">Bem-vindo!</h2>
+                            <p class="text-muted">Entre com suas credenciais</p>
+                        </div>
+
+                        <!-- Login Form -->
+                        <form action="/login" method="POST" id="loginForm">
+                            <div class="mb-3">
+                                <label for="email" class="form-label fw-semibold">
+                                    <i class="fas fa-envelope me-2 text-primary"></i>Email
+                                </label>
+                                <input type="email" 
+                                       class="form-control form-control-lg" 
+                                       id="email" 
+                                       name="email" 
+                                       placeholder="seu@email.com" 
+                                       maxlength="100"
+                                       autocomplete="email"
+                                       required>
+                                <div class="form-text">Máximo 100 caracteres</div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="password" class="form-label fw-semibold">
+                                    <i class="fas fa-lock me-2 text-primary"></i>Senha
+                                </label>
+                                <input type="password" 
+                                       class="form-control form-control-lg" 
+                                       id="password" 
+                                       name="password" 
+                                       placeholder="••••••••" 
+                                       maxlength="50"
+                                       autocomplete="current-password"
+                                       required>
+                                <div class="form-text">Máximo 50 caracteres</div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-lg w-100 mb-3" id="loginBtn">
+                                <i class="fas fa-sign-in-alt me-2"></i>Entrar no Sistema
+                            </button>
+                        </form>
+
+                        <!-- Divider -->
+                        <div class="text-center mb-3">
+                            <hr class="my-4">
+                            <small class="text-muted bg-white px-3">Usuários de Teste</small>
+                        </div>
+
+                        <!-- Test Users -->
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="card bg-light border-0">
+                                    <div class="card-body p-3 text-center">
+                                        <div class="mb-2">
+                                            <i class="fas fa-user-shield text-warning fa-lg"></i>
+                                        </div>
+                                        <h6 class="card-title mb-1">Admin</h6>
+                                        <small class="text-muted d-block">admin@carros.com</small>
+                                        <small class="text-muted">admin123</small>
+                                        <div class="mt-2">
+                                            <button type="button" class="btn btn-outline-warning btn-sm" 
+                                                    onclick="fillLogin('admin@carros.com', 'admin123')">
+                                                <i class="fas fa-copy me-1"></i>Usar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="card bg-light border-0">
+                                    <div class="card-body p-3 text-center">
+                                        <div class="mb-2">
+                                            <i class="fas fa-user text-info fa-lg"></i>
+                                        </div>
+                                        <h6 class="card-title mb-1">Usuário</h6>
+                                        <small class="text-muted d-block">user@carros.com</small>
+                                        <small class="text-muted">user123</small>
+                                        <div class="mt-2">
+                                            <button type="button" class="btn btn-outline-info btn-sm" 
+                                                    onclick="fillLogin('user@carros.com', 'user123')">
+                                                <i class="fas fa-copy me-1"></i>Usar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Info -->
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="card bg-white bg-opacity-10 border-0 text-white">
+                    <div class="card-body p-3 text-center">
+                        <h6 class="mb-2">
+                            <i class="fas fa-microchip me-2"></i>
+                            Sistema de Microserviços
+                        </h6>
+                        <small class="d-block">
+                            <i class="fas fa-shield-alt me-1"></i>
+                            Autenticação por Sessão (Sem JWT)
+                        </small>
+                        <small class="d-block">
+                            <i class="fas fa-server me-1"></i>
+                            3 Serviços: Auth • Cars • Web
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto-dismiss alerts
+        setTimeout(() => {
+            const alerts = document.querySelectorAll('.alert-dismissible');
+            alerts.forEach(alert => {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+
+        // Fill login form with test credentials
+        function fillLogin(email, password) {
+            document.getElementById('email').value = email;
+            document.getElementById('password').value = password;
+            
+            // Add visual feedback
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            
+            emailInput.classList.add('border-success');
+            passwordInput.classList.add('border-success');
+            
+            setTimeout(() => {
+                emailInput.classList.remove('border-success');
+                passwordInput.classList.remove('border-success');
+            }, 2000);
+        }
+
+        // Form validation and submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            const submitBtn = document.getElementById('loginBtn');
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            
+            // Basic validation
+            if (!email || !password) {
+                e.preventDefault();
+                showError('Email e senha são obrigatórios');
+                return;
+            }
+            
+            if (email.length > 100) {
+                e.preventDefault();
+                showError('Email muito longo (máximo 100 caracteres)');
+                return;
+            }
+            
+            if (password.length > 50) {
+                e.preventDefault();
+                showError('Senha muito longa (máximo 50 caracteres)');
+                return;
+            }
+            
+            // Show loading state
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Entrando...';
+            submitBtn.disabled = true;
+        });
+        
+        function showError(message) {
+            // Remove existing alerts
+            const existingAlert = document.querySelector('.alert-danger');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+            
+            // Create new alert
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-danger alert-dismissible fade show';
+            alert.innerHTML = `
+                <i class="fas fa-exclamation-circle me-2"></i>${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            // Insert before form
+            const form = document.getElementById('loginForm');
+            form.parentNode.insertBefore(alert, form);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<%- include('layout', { body: `
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <div class="py-5">
+                <i class="fas fa-exclamation-triangle fa-4x text-warning mb-4"></i>
+                <h1 class="display-4 mb-3">Oops!</h1>
+                <h4 class="mb-4">${message || 'Algo deu errado'}</h4>
+                
+                <% if (error && error.status) { %>
+                <p class="text-muted mb-4">
+                    Erro ${error.status}: ${error.message || 'Erro interno do servidor'}
+                </p>
+                <% } %>
+
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="/" class="btn btn-primary">
+                        <i class="fas fa-home me-2"></i>Página Inicial
+                    </a>
+                    <button onclick="history.back()" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Voltar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+` }) %>

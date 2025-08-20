@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navegação -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/dashboard">
+                <i class="fas fa-car me-2"></i>
+                Sistema de Carros
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/dashboard">
+                            <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/cars">
+                            <i class="fas fa-list me-1"></i>Carros
+                        </a>
+                    </li>
+                    <% if (user.tipo_usuario === 'administrador') { %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/cars/new">
+                            <i class="fas fa-plus me-1"></i>Novo Carro
+                        </a>
+                    </li>
+                    <% } %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/search">
+                            <i class="fas fa-search me-1"></i>Buscar
+                        </a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i>
+                            <%= user.nome %>
+                            <span class="badge bg-secondary ms-1"><%= user.tipo_usuario %></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <form method="POST" action="/logout" class="d-inline">
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Sair
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mensagens Flash -->
+    <% if (locals.success && success.length > 0) { %>
+        <div class="alert alert-success alert-dismissible fade show m-3" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <%= success %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    <% } %>
+
+    <% if (locals.error && error.length > 0) { %>
+        <div class="alert alert-danger alert-dismissible fade show m-3" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <%= error %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    <% } %>
+
+    <!-- Conteúdo Principal -->
+    <main class="container my-4">
+        <!-- Cabeçalho do Dashboard -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="h2 mb-3">
+                    <i class="fas fa-tachometer-alt text-primary me-2"></i>
+                    Dashboard
+                </h1>
+                <p class="text-muted">Bem-vindo ao sistema de gerenciamento de carros, <%= user.nome %>!</p>
+            </div>
+        </div>
+
+        <!-- Cards de Estatísticas -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title"><%= carStats.total_carros || 0 %></h4>
+                                <p class="card-text">Total de Carros</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-car fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title"><%= carStats.total_fabricantes || 0 %></h4>
+                                <p class="card-text">Fabricantes</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-industry fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title"><%= carStats.total_tipos || 0 %></h4>
+                                <p class="card-text">Tipos de Carros</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-tags fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">R$ <%= carStats.preco_medio ? Math.round(carStats.preco_medio).toLocaleString() : '0' %></h4>
+                                <p class="card-text">Preço Médio</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-dollar-sign fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ações Rápidas -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-bolt me-2"></i>Ações Rápidas
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 mb-2">
+                                <a href="/cars" class="btn btn-outline-primary w-100">
+                                    <i class="fas fa-list me-2"></i>Ver Todos os Carros
+                                </a>
+                            </div>
+                            <% if (user.tipo_usuario === 'administrador') { %>
+                            <div class="col-md-3 mb-2">
+                                <a href="/cars/new" class="btn btn-outline-success w-100">
+                                    <i class="fas fa-plus me-2"></i>Cadastrar Carro
+                                </a>
+                            </div>
+                            <% } %>
+                            <div class="col-md-3 mb-2">
+                                <a href="/search" class="btn btn-outline-info w-100">
+                                    <i class="fas fa-search me-2"></i>Buscar Carros
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <button class="btn btn-outline-secondary w-100" onclick="window.print()">
+                                    <i class="fas fa-print me-2"></i>Imprimir Relatório
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Carros Recentes -->
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-clock me-2"></i>Carros Recentes
+                        </h5>
+                        <a href="/cars" class="btn btn-sm btn-outline-primary">Ver Todos</a>
+                    </div>
+                    <div class="card-body">
+                        <% if (recentCars.length === 0) { %>
+                            <div class="text-center py-4">
+                                <i class="fas fa-car fa-3x text-muted mb-3"></i>
+                                <h5 class="text-muted">Nenhum carro cadastrado</h5>
+                                <% if (user.tipo_usuario === 'administrador') { %>
+                                <a href="/cars/new" class="btn btn-primary">
+                                    <i class="fas fa-plus me-2"></i>Cadastrar Primeiro Carro
+                                </a>
+                                <% } %>
+                            </div>
+                        <% } else { %>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Modelo</th>
+                                            <th>Fabricante</th>
+                                            <th>Ano</th>
+                                            <th>Tipo</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% recentCars.forEach(car => { %>
+                                        <tr>
+                                            <td><strong><%= car.modelo %></strong></td>
+                                            <td><%= car.fabricante %></td>
+                                            <td><%= car.ano_fabricacao %></td>
+                                            <td><span class="badge bg-secondary"><%= car.tipo %></span></td>
+                                            <td>
+                                                <a href="/cars/<%= car.id %>" class="btn btn-sm btn-outline-info">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <% if (user.tipo_usuario === 'administrador') { %>
+                                                <a href="/cars/<%= car.id %>/edit" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <% } %>
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-info-circle me-2"></i>Informações do Sistema
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <i class="fas fa-user me-2 text-primary"></i>
+                                <strong>Usuário:</strong> <%= user.nome %>
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-shield-alt me-2 text-success"></i>
+                                <strong>Nível:</strong> 
+                                <span class="badge bg-<%= user.tipo_usuario === 'administrador' ? 'danger' : 'info' %>">
+                                    <%= user.tipo_usuario %>
+                                </span>
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-calendar me-2 text-info"></i>
+                                <strong>Hoje:</strong> <%= new Date().toLocaleDateString('pt-BR') %>
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-database me-2 text-warning"></i>
+                                <strong>Banco:</strong> SQLite
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-server me-2 text-secondary"></i>
+                                <strong>Arquitetura:</strong> Monolítica
+                            </li>
+                        </ul>
+                        
+                        <hr>
+                        
+                        <div class="text-center">
+                            <small class="text-muted">
+                                Sistema desenvolvido para fins educacionais
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="bg-dark text-light py-3 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">
+                <i class="fas fa-car me-2"></i>
+                Sistema de Gerenciamento de Carros &copy; 2024
+            </p>
+            <small class="text-muted">Aplicação Monolítica Educacional</small>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+</html>
