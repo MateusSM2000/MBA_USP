@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação - Car Microservices com API Gateway</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .service-box {
+            background: white;
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            margin: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .service-box.auth { border-color: #ffc107; }
+        .service-box.car { border-color: #28a745; }
+        .service-box.web { border-color: #007bff; }
+        .api-endpoint {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        .method-get { border-left-color: #28a745; }
+        .method-post { border-left-color: #007bff; }
+        .method-put { border-left-color: #ffc107; }
+        .method-delete { border-left-color: #dc3545; }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="fas fa-microchip me-2"></i>Car Microservices + API Gateway
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/">
+                    <i class="fas fa-home me-1"></i>Início
+                </a>
+                <a class="nav-link" href="/login">
+                    <i class="fas fa-sign-in-alt me-1"></i>Login
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <!-- Header -->
+        <div class="mb-5">
+            <h1 class="display-4 fw-bold text-primary">
+                <i class="fas fa-book me-3"></i>Documentação Técnica
+            </h1>
+            <p class="lead">Sistema de Gestão de Carros com Arquitetura de Microserviços + API Gateway</p>
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                <strong>Versão:</strong> 2.0.0 | 
+                <strong>Arquitetura:</strong> Microserviços + API Gateway |
+                <strong>Última atualização:</strong> Agosto 2025
+            </div>
+        </div>
+
+        <!-- Overview -->
+        <section class="mb-5">
+            <h2 class="border-bottom pb-2">
+                <i class="fas fa-info-circle text-primary me-2"></i>Visão Geral
+            </h2>
+            <div class="row">
+                <div class="col-md-8">
+                    <p>
+                        O <strong>Car Microservices</strong> é um sistema de gestão de veículos desenvolvido 
+                        com arquitetura de microserviços, demonstrando as melhores práticas de desenvolvimento 
+                        moderno com foco em simplicidade e eficiência.
+                    </p>
+                    <h4>Características Principais:</h4>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>Arquitetura de microserviços desacoplada</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Autenticação por sessão (sem JWT)</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Interface web responsiva</li>
+                        <li><i class="fas fa-check text-success me-2"></i>CRUD completo de veículos</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Sistema de roles (Admin/User)</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Banco SQLite integrado</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-light">
+                        <div class="card-body text-center">
+                            <h5>Estatísticas do Sistema</h5>
+                            <div class="row">
+                                <div class="col-6">
+                                    <h3 class="text-primary">4</h3>
+                                    <small>Serviços</small>
+                                </div>
+                                <div class="col-6">
+                                    <h3 class="text-success">20+</h3>
+                                    <small>Endpoints</small>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-6">
+                                    <h3 class="text-danger">1</h3>
+                                    <small>API Gateway</small>
+                                </div>
+                                <div class="col-6">
+                                    <h3 class="text-info">1000</h3>
+                                    <small>Rate Limit/15min</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Architecture -->
+        <section class="mb-5">
+            <h2 class="border-bottom pb-2">
+                <i class="fas fa-sitemap text-primary me-2"></i>Arquitetura do Sistema
+            </h2>
+            
+            <div class="bg-light p-4 rounded mb-4">
+                <h4 class="text-center mb-4">Diagrama de Arquitetura com API Gateway</h4>
+                <div class="row align-items-center justify-content-center">
+                    <!-- Cliente -->
+                    <div class="col-md-2">
+                        <div class="service-box" style="border-color: #6c757d;">
+                            <i class="fas fa-user fa-2x text-secondary mb-2"></i>
+                            <h6>Cliente</h6>
+                            <small>Browser</small>
+                        </div>
+                    </div>
+                    <div class="col-md-1 text-center">
+                        <i class="fas fa-arrow-right fa-2x text-muted"></i>
+                    </div>
+                    <!-- API Gateway -->
+                    <div class="col-md-2">
+                        <div class="service-box" style="border-color: #dc3545;">
+                            <i class="fas fa-gateway fa-2x text-danger mb-2"></i>
+                            <h6>API Gateway</h6>
+                            <small>Porta 4000</small>
+                            <hr>
+                            <small>
+                                • Ponto único<br>
+                                • Rate limiting<br>
+                                • Autenticação<br>
+                                • Roteamento
+                            </small>
+                        </div>
+                    </div>
+                    <div class="col-md-1 text-center">
+                        <i class="fas fa-arrows-alt-h fa-2x text-muted"></i>
+                    </div>
+                    <!-- Microserviços -->
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="service-box web" style="font-size: 0.8rem;">
+                                    <i class="fas fa-desktop fa-lg text-primary mb-1"></i>
+                                    <h6>Frontend</h6>
+                                    <small>4003</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="service-box auth" style="font-size: 0.8rem;">
+                                    <i class="fas fa-shield-alt fa-lg text-warning mb-1"></i>
+                                    <h6>Auth</h6>
+                                    <small>4001</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="service-box car" style="font-size: 0.8rem;">
+                                    <i class="fas fa-car fa-lg text-success mb-1"></i>
+                                    <h6>Car</h6>
+                                    <small>4002</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <h5 class="text-center">Fluxo de Comunicação com API Gateway</h5>
+                    <div class="alert alert-info">
+                        <strong>1.</strong> Cliente faz requisição para API Gateway (4000) →
+                        <strong>2.</strong> Gateway valida autenticação e rate limiting →
+                        <strong>3.</strong> Gateway roteia para serviço apropriado →
+                        <strong>4.</strong> Serviço processa e retorna resposta →
+                        <strong>5.</strong> Gateway retorna resposta para cliente
+                    </div>
+                </div>
+                
+                <div class="mt-3">
+                    <h6 class="text-center">Vantagens do API Gateway</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="list-unstyled small">
+                                <li><i class="fas fa-check text-success me-2"></i>Ponto único de entrada</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Autenticação centralizada</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Rate limiting</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="list-unstyled small">
+                                <li><i class="fas fa-check text-success me-2"></i>Monitoramento centralizado</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Load balancing</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Versionamento de APIs</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Technologies -->
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>Tecnologias Backend</h4>
+                    <div class="list-group">
+                        <div class="list-group-item">
+                            <h6><i class="fab fa-node-js text-success me-2"></i>Node.js</h6>
+                            <small>Runtime JavaScript server-side</small>
+                        </div>
+                        <div class="list-group-item">
+                            <h6><i class="fas fa-server text-primary me-2"></i>Express.js</h6>
+                            <small>Framework web minimalista</small>
+                        </div>
+                        <div class="list-group-item">
+                            <h6><i class="fas fa-database text-info me-2"></i>SQLite</h6>
+                            <small>Banco de dados relacional leve</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h4>Tecnologias Frontend</h4>
+                    <div class="list-group">
+                        <div class="list-group-item">
+                            <h6><i class="fab fa-bootstrap text-purple me-2"></i>Bootstrap 5</h6>
+                            <small>Framework CSS responsivo</small>
+                        </div>
+                        <div class="list-group-item">
+                            <h6><i class="fas fa-file-code text-warning me-2"></i>EJS</h6>
+                            <small>Template engine server-side</small>
+                        </div>
+                        <div class="list-group-item">
+                            <h6><i class="fas fa-icons text-danger me-2"></i>FontAwesome</h6>
+                            <small>Biblioteca de ícones</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- APIs -->
+        <section class="mb-5">
+            <h2 class="border-bottom pb-2">
+                <i class="fas fa-plug text-primary me-2"></i>APIs e Endpoints
+            </h2>
+            
+            <div class="row">
+                <!-- Auth Service -->
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-warning text-dark">
+                            <h5 class="mb-0">
+                                <i class="fas fa-shield-alt me-2"></i>Auth Service
+                            </h5>
+                            <small>http://localhost:4001</small>
+                        </div>
+                        <div class="card-body">
+                            <div class="api-endpoint method-post">
+                                <strong>POST</strong> /login
+                                <small class="d-block">Autenticar usuário</small>
+                            </div>
+                            <div class="api-endpoint method-post">
+                                <strong>POST</strong> /verify
+                                <small class="d-block">Verificar sessão</small>
+                            </div>
+                            <div class="api-endpoint method-get">
+                                <strong>GET</strong> /validate/:id
+                                <small class="d-block">Validar sessão</small>
+                            </div>
+                            <div class="api-endpoint method-post">
+                                <strong>POST</strong> /logout
+                                <small class="d-block">Encerrar sessão</small>
+                            </div>
+                            <div class="api-endpoint method-get">
+                                <strong>GET</strong> /sessions
+                                <small class="d-block">Listar sessões (debug)</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Car Service -->
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-car me-2"></i>Car Service
+                            </h5>
+                            <small>http://localhost:4002</small>
+                        </div>
+                        <div class="card-body">
+                            <div class="api-endpoint method-get">
+                                <strong>GET</strong> /cars
+                                <small class="d-block">Listar carros</small>
+                            </div>
+                            <div class="api-endpoint method-get">
+                                <strong>GET</strong> /cars/:id
+                                <small class="d-block">Obter carro específico</small>
+                            </div>
+                            <div class="api-endpoint method-post">
+                                <strong>POST</strong> /cars
+                                <small class="d-block">Criar novo carro</small>
+                            </div>
+                            <div class="api-endpoint method-put">
+                                <strong>PUT</strong> /cars/:id
+                                <small class="d-block">Atualizar carro</small>
+                            </div>
+                            <div class="api-endpoint method-delete">
+                                <strong>DELETE</strong> /cars/:id
+                                <small class="d-block">Deletar carro</small>
+                            </div>
+                            <div class="api-endpoint method-get">
+                                <strong>GET</strong> /stats
+                                <small class="d-block">Estatísticas (admin)</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Web Service -->
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-desktop me-2"></i>Web Service
+                            </h5>
+                            <small>http://localhost:4000</small>
+                        </div>
+                        <div class="card-body">
+                            <div class="api-endpoint method-get">
+                                <strong>GET</strong> /
+                                <small class="d-block">Página inicial</small>
+                            </div>
+                            <div class="api-endpoint method-get">
+                                <strong>GET</strong> /login
+                                <small class="d-block">Página de login</small>
+                            </div>
+                            <div class="api-endpoint method-get">
+                                <strong>GET</strong> /dashboard
+                                <small class="d-block">Dashboard do usuário</small>
+                            </div>
+                            <div class="api-endpoint method-get">
+                                <strong>GET</strong> /cars
+                                <small class="d-block">Lista de carros</small>
+                            </div>
+                            <div class="api-endpoint method-get">
+                                <strong>GET</strong> /cars/new
+                                <small class="d-block">Formulário novo carro</small>
+                            </div>
+                            <div class="api-endpoint method-get">
+                                <strong>GET</strong> /docs.html
+                                <small class="d-block">Esta documentação</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- OpenAPI Specification -->
+        <section class="mb-5">
+            <h2 class="border-bottom pb-2">
+                <i class="fas fa-code text-primary me-2"></i>Especificação OpenAPI
+            </h2>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h4>Car Service API - OpenAPI 3.0</h4>
+                </div>
+                <div class="card-body">
+                    <pre><code>openapi: 3.0.0
+info:
+  title: Car Service API
+  description: Serviço de gestão de veículos
+  version: 1.0.0
+servers:
+  - url: http://localhost:3002
+
+paths:
+  /cars:
+    get:
+      summary: Listar carros
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de carros
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Car'
+    
+    post:
+      summary: Criar novo carro
+      security:
+        - SessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CarInput'
+      responses:
+        '201':
+          description: Carro criado
+
+components:
+  schemas:
+    Car:
+      type: object
+      properties:
+        id:
+          type: integer
+        marca:
+          type: string
+        modelo:
+          type: string
+        ano:
+          type: integer
+        cor:
+          type: string
+        preco:
+          type: number
+        disponivel:
+          type: integer
+    
+    CarInput:
+      type: object
+      required:
+        - marca
+        - modelo
+        - ano
+        - cor
+        - preco
+      properties:
+        marca:
+          type: string
+        modelo:
+          type: string
+        ano:
+          type: integer
+        cor:
+          type: string
+        preco:
+          type: number</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Comparison -->
+        <section class="mb-5">
+            <h2 class="border-bottom pb-2">
+                <i class="fas fa-balance-scale text-primary me-2"></i>Monolito vs Microserviços
+            </h2>
+            
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="table-primary">
+                        <tr>
+                            <th width="20%">Aspecto</th>
+                            <th width="40%">
+                                <i class="fas fa-cube me-2"></i>Aplicação Monolítica
+                            </th>
+                            <th width="40%">
+                                <i class="fas fa-cubes me-2"></i>Microserviços
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Arquitetura</strong></td>
+                            <td class="table-warning">
+                                • Uma única aplicação<br>
+                                • Todas as funcionalidades juntas<br>
+                                • Acoplamento alto<br>
+                                • Deploy único
+                            </td>
+                            <td class="table-info">
+                                • Múltiplos serviços independentes<br>
+                                • Responsabilidades específicas<br>
+                                • Baixo acoplamento<br>
+                                • Deploy independente
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Desenvolvimento</strong></td>
+                            <td class="table-warning">
+                                • Mais simples inicialmente<br>
+                                • Uma base de código<br>
+                                • Fácil debugging local<br>
+                                • Transações ACID simples
+                            </td>
+                            <td class="table-info">
+                                • Complexidade inicial maior<br>
+                                • Múltiplas bases de código<br>
+                                • Debugging distribuído<br>
+                                • Transações distribuídas
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Escalabilidade</strong></td>
+                            <td class="table-warning">
+                                • Escala toda a aplicação<br>
+                                • Recursos desperdiçados<br>
+                                • Limitações de tecnologia<br>
+                                • Gargalos compartilhados
+                            </td>
+                            <td class="table-info">
+                                • Escala serviços específicos<br>
+                                • Uso eficiente de recursos<br>
+                                • Tecnologias diferentes<br>
+                                • Isolamento de problemas
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Deploy</strong></td>
+                            <td class="table-warning">
+                                • Deploy único e simples<br>
+                                • Rollback fácil<br>
+                                • Downtime para atualizações<br>
+                                • Teste de integração simples
+                            </td>
+                            <td class="table-info">
+                                • Deploy independente<br>
+                                • Rollback granular<br>
+                                • Zero downtime possível<br>
+                                • Testes distribuídos complexos
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ideal Para</strong></td>
+                            <td class="table-warning">
+                                • Projetos pequenos/médios<br>
+                                • Equipes pequenas<br>
+                                • Prototipagem rápida<br>
+                                • Aplicações simples
+                            </td>
+                            <td class="table-info">
+                                • Projetos grandes/complexos<br>
+                                • Múltiplas equipes<br>
+                                • Escalabilidade crítica<br>
+                                • Domínios bem definidos
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="alert alert-info">
+                <h5><i class="fas fa-lightbulb me-2"></i>Por que Microserviços neste Projeto?</h5>
+                <p class="mb-0">
+                    Este projeto foi desenvolvido com microserviços para <strong>fins educacionais</strong> 
+                    e demonstração de conceitos, mostrando como separar responsabilidades, 
+                    implementar comunicação entre serviços e gerenciar autenticação distribuída.
+                </p>
+            </div>
+        </section>
+
+        <!-- Quick Start -->
+        <section class="mb-5">
+            <h2 class="border-bottom pb-2">
+                <i class="fas fa-rocket text-primary me-2"></i>Como Executar
+            </h2>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-play me-2"></i>Início Rápido
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <pre><code># Iniciar todos os serviços
+./start.sh
+
+# Acessar sistema
+http://localhost:3000
+
+# Parar serviços
+./stop.sh</code></pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-user me-2"></i>Usuários de Teste
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-2">
+                                <strong>Admin:</strong><br>
+                                <code>admin@carros.com / admin123</code>
+                            </div>
+                            <div>
+                                <strong>Usuário:</strong><br>
+                                <code>user@carros.com / user123</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <div class="text-center py-4 border-top">
+            <p class="text-muted mb-0">
+                <i class="fas fa-code me-2"></i>
+                Desenvolvido com ❤️ usando arquitetura de microserviços
+            </p>
+            <small class="text-muted">
+                Sistema de demonstração • Autenticação por sessão • Zero dependências JWT
+            </small>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

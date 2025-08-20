@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arquitetura do Sistema - Car Microservices</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 0;
+        }
+        .architecture-diagram {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        .service-box {
+            background: white;
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.5rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .api-gateway-box {
+            background: #fff3cd;
+            border-color: #ffc107;
+        }
+        .auth-service-box {
+            background: #d1ecf1;
+            border-color: #17a2b8;
+        }
+        .car-service-box {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        .frontend-service-box {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+        .arrow {
+            font-size: 2rem;
+            color: #6c757d;
+            margin: 1rem 0;
+        }
+        .tech-badge {
+            background: #e9ecef;
+            border: 1px solid #ced4da;
+            border-radius: 20px;
+            padding: 0.25rem 0.75rem;
+            margin: 0.25rem;
+            display: inline-block;
+            font-size: 0.875rem;
+        }
+        .route-table {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        .method-get { background-color: #d4edda; color: #155724; }
+        .method-post { background-color: #cce5ff; color: #004085; }
+        .method-put { background-color: #fff3cd; color: #856404; }
+        .method-delete { background-color: #f8d7da; color: #721c24; }
+        .openapi-section {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        pre {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        .nav-pills .nav-link.active {
+            background-color: #007bff;
+        }
+        .toc {
+            position: sticky;
+            top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-car me-2"></i>Car Microservices
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/dashboard">
+                    <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                </a>
+                <a class="nav-link" href="/cars">
+                    <i class="fas fa-car me-1"></i>Carros
+                </a>
+                <a class="nav-link active" href="/architecture">
+                    <i class="fas fa-sitemap me-1"></i>Arquitetura
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container text-center">
+            <h1 class="display-4 fw-bold mb-3">
+                <i class="fas fa-sitemap me-3"></i>
+                Arquitetura do Sistema
+            </h1>
+            <p class="lead mb-4">
+                Sistema de Microserviços para Gerenciamento de Carros
+            </p>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="d-flex justify-content-center flex-wrap">
+                        <span class="tech-badge bg-warning text-dark">
+                            <i class="fab fa-node-js me-1"></i>Node.js
+                        </span>
+                        <span class="tech-badge bg-success text-white">
+                            <i class="fas fa-server me-1"></i>Express.js
+                        </span>
+                        <span class="tech-badge bg-info text-white">
+                            <i class="fas fa-database me-1"></i>SQLite
+                        </span>
+                        <span class="tech-badge bg-primary text-white">
+                            <i class="fab fa-bootstrap me-1"></i>Bootstrap
+                        </span>
+                        <span class="tech-badge bg-secondary text-white">
+                            <i class="fas fa-code me-1"></i>EJS
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <!-- Table of Contents -->
+            <div class="col-lg-3">
+                <div class="toc">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0">
+                                <i class="fas fa-list me-2"></i>Índice
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <nav class="nav nav-pills flex-column">
+                                <a class="nav-link" href="#overview">Visão Geral</a>
+                                <a class="nav-link" href="#architecture">Arquitetura</a>
+                                <a class="nav-link" href="#services">Serviços</a>
+                                <a class="nav-link" href="#technologies">Tecnologias</a>
+                                <a class="nav-link" href="#routes">Rotas</a>
+                                <a class="nav-link" href="#openapi">API Documentation</a>
+                                <a class="nav-link" href="#deployment">Deploy</a>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <!-- Overview Section -->
+                <section id="overview" class="mb-5">
+                    <h2 class="border-bottom pb-2">
+                        <i class="fas fa-eye me-2 text-primary"></i>Visão Geral
+                    </h2>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <p class="lead">
+                                Sistema distribuído baseado em arquitetura de microserviços para gerenciamento 
+                                de carros, implementado com Node.js e seguindo princípios de separação de responsabilidades.
+                            </p>
+                            <h4>Características Principais:</h4>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success me-2"></i>Arquitetura de Microserviços</li>
+                                <li><i class="fas fa-check text-success me-2"></i>API Gateway como ponto único de entrada</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Autenticação baseada em sessão</li>
+                                <li><i class="fas fa-check text-success me-2"></i>CRUD completo para carros</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Interface web responsiva</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Rate limiting e logging</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">
+                                        <i class="fas fa-chart-pie text-primary me-2"></i>
+                                        Estatísticas
+                                    </h5>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <h3 class="text-primary">4</h3>
+                                            <small>Serviços</small>
+                                        </div>
+                                        <div class="col-6">
+                                            <h3 class="text-success">15+</h3>
+                                            <small>Endpoints</small>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <h3 class="text-warning">4</h3>
+                                            <small>Portas</small>
+                                        </div>
+                                        <div class="col-6">
+                                            <h3 class="text-info">3</h3>
+                                            <small>Tecnologias</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Architecture Section -->
+                <section id="architecture" class="mb-5">
+                    <h2 class="border-bottom pb-2">
+                        <i class="fas fa-sitemap me-2 text-primary"></i>Arquitetura do Sistema
+                    </h2>
+                    
+                    <div class="architecture-diagram">
+                        <h4 class="text-center mb-4">Diagrama de Arquitetura</h4>
+                        
+                        <!-- Client Layer -->
+                        <div class="text-center mb-3">
+                            <div class="service-box d-inline-block" style="background: #e3f2fd; border-color: #2196f3;">
+                                <i class="fas fa-desktop fa-2x text-primary mb-2"></i>
+                                <h6>Cliente (Browser)</h6>
+                                <small>Interface do Usuário</small>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center arrow">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                        
+                        <!-- API Gateway Layer -->
+                        <div class="text-center mb-3">
+                            <div class="service-box api-gateway-box d-inline-block">
+                                <i class="fas fa-gateway fa-2x text-warning mb-2"></i>
+                                <h6><strong>API Gateway</strong></h6>
+                                <small>Porta: 4000</small><br>
+                                <small>Ponto único de entrada</small>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center arrow">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                        
+                        <!-- Services Layer -->
+                        <div class="row justify-content-center">
+                            <div class="col-md-4">
+                                <div class="service-box auth-service-box">
+                                    <i class="fas fa-shield-alt fa-2x text-info mb-2"></i>
+                                    <h6><strong>Auth Service</strong></h6>
+                                    <small>Porta: 4001</small><br>
+                                    <small>Autenticação e Autorização</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="service-box car-service-box">
+                                    <i class="fas fa-car fa-2x text-success mb-2"></i>
+                                    <h6><strong>Car Service</strong></h6>
+                                    <small>Porta: 4002</small><br>
+                                    <small>CRUD de Carros</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="service-box frontend-service-box">
+                                    <i class="fas fa-globe fa-2x text-danger mb-2"></i>
+                                    <h6><strong>Frontend Service</strong></h6>
+                                    <small>Porta: 4003</small><br>
+                                    <small>Interface Web</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center arrow">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                        
+                        <!-- Database Layer -->
+                        <div class="text-center">
+                            <div class="service-box d-inline-block" style="background: #f3e5f5; border-color: #9c27b0;">
+                                <i class="fas fa-database fa-2x text-purple mb-2" style="color: #9c27b0;"></i>
+                                <h6>Banco de Dados</h6>
+                                <small>SQLite (users.db, cars.db)</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h4>Fluxo de Requisições</h4>
+                            <ol>
+                                <li><strong>Cliente</strong> faz requisição para API Gateway</li>
+                                <li><strong>API Gateway</strong> autentica via Auth Service</li>
+                                <li><strong>API Gateway</strong> roteia para serviço apropriado</li>
+                                <li><strong>Serviço</strong> processa e retorna resposta</li>
+                                <li><strong>API Gateway</strong> retorna resposta ao cliente</li>
+                            </ol>
+                        </div>
+                        <div class="col-md-6">
+                            <h4>Benefícios da Arquitetura</h4>
+                            <ul>
+                                <li><i class="fas fa-check text-success me-2"></i>Escalabilidade independente</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Isolamento de falhas</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Tecnologias específicas por serviço</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Deploy independente</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Manutenibilidade</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Services Section -->
+                <section id="services" class="mb-5">
+                    <h2 class="border-bottom pb-2">
+                        <i class="fas fa-cogs me-2 text-primary"></i>Detalhes dos Serviços
+                    </h2>
+                    
+                    <div class="row">
+                        <!-- API Gateway -->
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100">
+                                <div class="card-header api-gateway-box">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-gateway me-2"></i>API Gateway
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>Porta:</strong> 4000</p>
+                                    <p><strong>Responsabilidades:</strong></p>
+                                    <ul>
+                                        <li>Ponto único de entrada</li>
+                                        <li>Roteamento de requisições</li>
+                                        <li>Middleware de autenticação</li>
+                                        <li>Rate limiting</li>
+                                        <li>Logging centralizado</li>
+                                        <li>Proxy para serviços</li>
+                                    </ul>
+                                    <p><strong>Tecnologias:</strong></p>
+                                    <span class="tech-badge">Express.js</span>
+                                    <span class="tech-badge">http-proxy-middleware</span>
+                                    <span class="tech-badge">express-rate-limit</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Auth Service -->
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100">
+                                <div class="card-header auth-service-box">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-shield-alt me-2"></i>Auth Service
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>Porta:</strong> 4001</p>
+                                    <p><strong>Responsabilidades:</strong></p>
+                                    <ul>
+                                        <li>Autenticação de usuários</li>
+                                        <li>Gerenciamento de sessões</li>
+                                        <li>Controle de acesso (RBAC)</li>
+                                        <li>Validação de credenciais</li>
+                                        <li>Hash de senhas (bcrypt)</li>
+                                    </ul>
+                                    <p><strong>Tecnologias:</strong></p>
+                                    <span class="tech-badge">Express.js</span>
+                                    <span class="tech-badge">SQLite</span>
+                                    <span class="tech-badge">bcrypt</span>
+                                    <span class="tech-badge">uuid</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Car Service -->
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100">
+                                <div class="card-header car-service-box">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-car me-2"></i>Car Service
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>Porta:</strong> 4002</p>
+                                    <p><strong>Responsabilidades:</strong></p>
+                                    <ul>
+                                        <li>CRUD de carros</li>
+                                        <li>Busca e filtros</li>
+                                        <li>Paginação</li>
+                                        <li>Validação de dados</li>
+                                        <li>Persistência em banco</li>
+                                    </ul>
+                                    <p><strong>Tecnologias:</strong></p>
+                                    <span class="tech-badge">Express.js</span>
+                                    <span class="tech-badge">SQLite</span>
+                                    <span class="tech-badge">SQL</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Frontend Service -->
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100">
+                                <div class="card-header frontend-service-box">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-globe me-2"></i>Frontend Service
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>Porta:</strong> 4003</p>
+                                    <p><strong>Responsabilidades:</strong></p>
+                                    <ul>
+                                        <li>Renderização de páginas</li>
+                                        <li>Interface do usuário</li>
+                                        <li>Formulários HTML</li>
+                                        <li>Templates EJS</li>
+                                        <li>Assets estáticos</li>
+                                    </ul>
+                                    <p><strong>Tecnologias:</strong></p>
+                                    <span class="tech-badge">Express.js</span>
+                                    <span class="tech-badge">EJS</span>
+                                    <span class="tech-badge">Bootstrap</span>
+                                    <span class="tech-badge">Font Awesome</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Technologies Section -->
+                <section id="technologies" class="mb-5">
+                    <h2 class="border-bottom pb-2">
+                        <i class="fas fa-code me-2 text-primary"></i>Tecnologias Utilizadas
+                    </h2>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header bg-warning text-dark">
+                                    <h5 class="mb-0">
+                                        <i class="fab fa-node-js me-2"></i>Backend
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled">
+                                        <li><strong>Node.js</strong> - Runtime JavaScript</li>
+                                        <li><strong>Express.js</strong> - Framework web</li>
+                                        <li><strong>SQLite</strong> - Banco de dados</li>
+                                        <li><strong>bcrypt</strong> - Hash de senhas</li>
+                                        <li><strong>uuid</strong> - Geração de IDs</li>
+                                        <li><strong>axios</strong> - Cliente HTTP</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-palette me-2"></i>Frontend
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled">
+                                        <li><strong>EJS</strong> - Template engine</li>
+                                        <li><strong>Bootstrap 5</strong> - CSS framework</li>
+                                        <li><strong>Font Awesome</strong> - Ícones</li>
+                                        <li><strong>JavaScript</strong> - Interatividade</li>
+                                        <li><strong>HTML5</strong> - Estrutura</li>
+                                        <li><strong>CSS3</strong> - Estilização</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header bg-success text-white">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-tools me-2"></i>Ferramentas
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled">
+                                        <li><strong>http-proxy-middleware</strong> - Proxy</li>
+                                        <li><strong>express-rate-limit</strong> - Rate limiting</li>
+                                        <li><strong>cookie-parser</strong> - Cookies</li>
+                                        <li><strong>method-override</strong> - HTTP methods</li>
+                                        <li><strong>npm</strong> - Gerenciador de pacotes</li>
+                                        <li><strong>nodemon</strong> - Auto-reload</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Routes Section -->
+                <section id="routes" class="mb-5">
+                    <h2 class="border-bottom pb-2">
+                        <i class="fas fa-route me-2 text-primary"></i>Mapeamento de Rotas
+                    </h2>
+                    
+                    <!-- API Gateway Routes -->
+                    <div class="card mb-4">
+                        <div class="card-header api-gateway-box">
+                            <h5 class="mb-0">
+                                <i class="fas fa-gateway me-2"></i>API Gateway (Porta 4000)
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-sm route-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Método</th>
+                                            <th>Rota</th>
+                                            <th>Descrição</th>
+                                            <th>Proxy Para</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><span class="badge method-get">GET</span></td>
+                                            <td>/</td>
+                                            <td>Página inicial (redireciona)</td>
+                                            <td>Frontend Service</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge method-get">GET</span></td>
+                                            <td>/login</td>
+                                            <td>Página de login</td>
+                                            <td>Frontend Service</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge method-post">POST</span></td>
+                                            <td>/login</td>
+                                            <td>Processar login</td>
+                                            <td>Auth Service</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge method-get">GET</span></td>
+                                            <td>/dashboard</td>
+                                            <td>Dashboard principal</td>
+                                            <td>Frontend Service</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge method-get">GET</span></td>
+                                            <td>/cars</td>
+                                            <td>Listar carros</td>
+                                            <td>Frontend Service</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge method-post">POST</span></td>
+                                            <td>/cars</td>
+                                            <td>Criar carro</td>
+                                            <td>Car Service (direto)</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge method-post">POST</span></td>
+                                            <td>/cars/:id</td>
+                                            <td>Atualizar/Deletar carro</td>
+                                            <td>Car Service (direto)</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge method-get">GET</span></td>
+                                            <td>/api/cars</td>
+                                            <td>API de carros</td>
+                                            <td>Car Service</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge method-get">GET</span></td>
+                                            <td>/gateway/health</td>
+                                            <td>Health check</td>
+                                            <td>-</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- OpenAPI Section -->
+                <section id="openapi" class="mb-5">
+                    <h2 class="border-bottom pb-2">
+                        <i class="fas fa-file-code me-2 text-primary"></i>Documentação OpenAPI
+                    </h2>
+                    
+                    <div class="openapi-section">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h4>Especificação OpenAPI 3.0.3</h4>
+                                <p>
+                                    A API está documentada seguindo o padrão OpenAPI 3.0.3, incluindo todos os endpoints,
+                                    schemas, autenticação e exemplos de uso.
+                                </p>
+                                <h5>Características da Documentação:</h5>
+                                <ul>
+                                    <li><i class="fas fa-check text-success me-2"></i>Endpoints completos com parâmetros</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Schemas de request/response</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Códigos de status HTTP</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Exemplos práticos</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Autenticação por sessão</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Validações e constraints</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-header bg-info text-white">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-download me-2"></i>Arquivo OpenAPI
+                                        </h6>
+                                    </div>
+                                    <div class="card-body text-center">
+                                        <p class="mb-3">Baixe a especificação completa:</p>
+                                        <a href="/openapi.yaml" class="btn btn-outline-info" download>
+                                            <i class="fas fa-file-download me-2"></i>
+                                            openapi.yaml
+                                        </a>
+                                        <hr>
+                                        <small class="text-muted">
+                                            Compatível com Swagger UI, Postman, Insomnia
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- API Examples -->
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h5>Exemplo: Listar Carros</h5>
+                            <pre><code class="language-bash">curl -X GET "http://localhost:4000/api/cars?page=1&limit=5&search=Toyota" \
+  -H "Accept: application/json"</code></pre>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Exemplo: Criar Carro</h5>
+                            <pre><code class="language-bash">curl -X POST "http://localhost:4000/cars" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "marca=Honda&modelo=Civic&ano=2024&cor=Azul&preco=95000"</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Response Example -->
+                    <div class="mt-4">
+                        <h5>Exemplo de Resposta JSON:</h5>
+                        <pre><code class="language-json">{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "marca": "Toyota",
+      "modelo": "Corolla",
+      "ano": 2023,
+      "cor": "Branco",
+      "preco": 85000.00,
+      "disponivel": 1,
+      "created_at": "2024-01-15 10:30:00"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "total": 25,
+    "pages": 3
+  }
+}</code></pre>
+                    </div>
+                </section>
+
+                <!-- Deployment Section -->
+                <section id="deployment" class="mb-5">
+                    <h2 class="border-bottom pb-2">
+                        <i class="fas fa-rocket me-2 text-primary"></i>Deploy e Execução
+                    </h2>
+                    
+                    <div class="alert alert-info">
+                        <h5 class="alert-heading">
+                            <i class="fas fa-info-circle me-2"></i>Informações de Acesso
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>URLs de Acesso:</h6>
+                                <ul class="mb-0">
+                                    <li><strong>Sistema:</strong> <a href="http://localhost:4000" target="_blank">http://localhost:4000</a></li>
+                                    <li><strong>Documentação:</strong> <a href="/architecture" target="_blank">http://localhost:4000/architecture</a></li>
+                                    <li><strong>Health Check:</strong> <a href="/gateway/health" target="_blank">http://localhost:4000/gateway/health</a></li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Usuários de Teste:</h6>
+                                <ul class="mb-0">
+                                    <li><strong>Admin:</strong> admin@carros.com / admin123</li>
+                                    <li><strong>Usuário:</strong> user@carros.com / user123</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+            <div class="row">
+                <div class="col-md-4">
+                    <h6><i class="fas fa-car me-2"></i>Car Microservices</h6>
+                    <small>Sistema de Microserviços</small>
+                </div>
+                <div class="col-md-4">
+                    <h6><i class="fas fa-code me-2"></i>Tecnologia</h6>
+                    <small>Node.js + Express.js + SQLite</small>
+                </div>
+                <div class="col-md-4">
+                    <h6><i class="fas fa-sitemap me-2"></i>Arquitetura</h6>
+                    <small>API Gateway + 3 Microserviços</small>
+                </div>
+            </div>
+            <hr class="my-3">
+            <small class="text-muted">
+                © 2024 Car Microservices. Documentação da arquitetura do sistema.
+            </small>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Update active nav link on scroll
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-pills .nav-link');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (scrollY >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Copy code functionality
+        document.querySelectorAll('pre code').forEach(block => {
+            const button = document.createElement('button');
+            button.className = 'btn btn-sm btn-outline-secondary position-absolute';
+            button.style.top = '10px';
+            button.style.right = '10px';
+            button.innerHTML = '<i class="fas fa-copy"></i>';
+            button.title = 'Copiar código';
+            
+            const pre = block.parentElement;
+            pre.style.position = 'relative';
+            pre.appendChild(button);
+            
+            button.addEventListener('click', () => {
+                navigator.clipboard.writeText(block.textContent).then(() => {
+                    button.innerHTML = '<i class="fas fa-check text-success"></i>';
+                    setTimeout(() => {
+                        button.innerHTML = '<i class="fas fa-copy"></i>';
+                    }, 2000);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

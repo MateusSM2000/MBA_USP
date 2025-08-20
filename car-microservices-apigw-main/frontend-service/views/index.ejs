@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Carros - Microserviços Simples</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .hero-section { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .feature-card { transition: transform 0.3s ease; }
+        .feature-card:hover { transform: translateY(-5px); }
+        .architecture-diagram { background: #f8f9fa; border-radius: 10px; padding: 20px; }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="fas fa-microchip me-2"></i>Car Microservices
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/docs.html">
+                    <i class="fas fa-book me-1"></i>Documentação
+                </a>
+                <a class="nav-link" href="/login">
+                    <i class="fas fa-sign-in-alt me-1"></i>Fazer Login
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid p-0">
+        <!-- Hero Section -->
+        <section class="hero-section text-white py-5">
+            <div class="container">
+                <div class="row align-items-center min-vh-50">
+                    <div class="col-lg-6">
+                        <h1 class="display-4 fw-bold mb-4">
+                            <i class="fas fa-car me-3"></i>Sistema de Carros
+                        </h1>
+                        <p class="lead mb-4">
+                            Microserviços Simples com <strong>Autenticação por Sessão</strong>
+                        </p>
+                        <p class="mb-4">
+                            Arquitetura moderna e simplificada, ideal para aplicações locais. 
+                            Sem complexidade desnecessária de JWT - usando sessões eficientes.
+                        </p>
+                        <div class="d-flex gap-3">
+                            <a href="/login" class="btn btn-light btn-lg">
+                                <i class="fas fa-sign-in-alt me-2"></i>Acessar Sistema
+                            </a>
+                            <a href="#architecture" class="btn btn-outline-light btn-lg">
+                                <i class="fas fa-info-circle me-2"></i>Ver Arquitetura
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 text-center">
+                        <div class="p-4">
+                            <i class="fas fa-server fa-5x mb-3 opacity-75"></i>
+                            <h4>3 Microserviços</h4>
+                            <p class="mb-0">Auth • Cars • Web</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="py-5">
+            <div class="container">
+                <div class="row text-center mb-5">
+                    <div class="col-12">
+                        <h2 class="display-6 fw-bold mb-3">Características Principais</h2>
+                        <p class="lead text-muted">Simplicidade e eficiência em primeiro lugar</p>
+                    </div>
+                </div>
+                
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="card feature-card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                                    <i class="fas fa-users-cog fa-2x text-primary"></i>
+                                </div>
+                                <h5 class="card-title fw-bold">Autenticação por Sessão</h5>
+                                <p class="card-text text-muted">
+                                    Sistema simples e eficiente usando sessões em memória. 
+                                    Sem overhead de JWT para aplicações locais.
+                                </p>
+                                <div class="mt-3">
+                                    <span class="badge bg-success me-1">Rápido</span>
+                                    <span class="badge bg-info me-1">Simples</span>
+                                    <span class="badge bg-warning">Local</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card feature-card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                                    <i class="fas fa-microchip fa-2x text-success"></i>
+                                </div>
+                                <h5 class="card-title fw-bold">Microserviços Desacoplados</h5>
+                                <p class="card-text text-muted">
+                                    Três serviços independentes que se comunicam via HTTP. 
+                                    Fácil de desenvolver, testar e manter.
+                                </p>
+                                <div class="mt-3">
+                                    <span class="badge bg-primary me-1">Modular</span>
+                                    <span class="badge bg-secondary me-1">HTTP</span>
+                                    <span class="badge bg-success">REST</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card feature-card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                                    <i class="fas fa-database fa-2x text-warning"></i>
+                                </div>
+                                <h5 class="card-title fw-bold">Zero Configuração</h5>
+                                <p class="card-text text-muted">
+                                    SQLite embutido, sem necessidade de configurar bancos externos. 
+                                    Inicie com um comando!
+                                </p>
+                                <div class="mt-3">
+                                    <span class="badge bg-warning me-1">SQLite</span>
+                                    <span class="badge bg-info me-1">Plug & Play</span>
+                                    <span class="badge bg-success">Rápido</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Architecture Section -->
+        <section id="architecture" class="py-5 bg-light">
+            <div class="container">
+                <div class="row text-center mb-5">
+                    <div class="col-12">
+                        <h2 class="display-6 fw-bold mb-3">Arquitetura do Sistema</h2>
+                        <p class="lead text-muted">Comunicação simples entre microserviços</p>
+                    </div>
+                </div>
+
+                <!-- Architecture Diagram -->
+                <div class="row justify-content-center mb-5">
+                    <div class="col-lg-10">
+                        <div class="architecture-diagram">
+                            <div class="row g-4 align-items-center">
+                                <!-- Web Service -->
+                                <div class="col-md-4">
+                                    <div class="card border-primary">
+                                        <div class="card-header bg-primary text-white text-center">
+                                            <h6 class="mb-0">
+                                                <i class="fas fa-desktop me-2"></i>Web Service
+                                            </h6>
+                                            <small>Porta 3000</small>
+                                        </div>
+                                        <div class="card-body">
+                                            <ul class="list-unstyled mb-0 small">
+                                                <li><i class="fas fa-check text-success me-2"></i>Interface Web</li>
+                                                <li><i class="fas fa-check text-success me-2"></i>Templates EJS</li>
+                                                <li><i class="fas fa-check text-success me-2"></i>Cookies de Sessão</li>
+                                                <li><i class="fas fa-check text-success me-2"></i>Bootstrap UI</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Arrows -->
+                                <div class="col-md-1 text-center">
+                                    <i class="fas fa-exchange-alt fa-2x text-muted"></i>
+                                </div>
+
+                                <!-- Auth Service -->
+                                <div class="col-md-3">
+                                    <div class="card border-warning">
+                                        <div class="card-header bg-warning text-dark text-center">
+                                            <h6 class="mb-0">
+                                                <i class="fas fa-shield-alt me-2"></i>Auth Service
+                                            </h6>
+                                            <small>Porta 3001</small>
+                                        </div>
+                                        <div class="card-body">
+                                            <ul class="list-unstyled mb-0 small">
+                                                <li><i class="fas fa-check text-success me-2"></i>Login/Logout</li>
+                                                <li><i class="fas fa-check text-success me-2"></i>Sessões em RAM</li>
+                                                <li><i class="fas fa-check text-success me-2"></i>Validação Roles</li>
+                                                <li><i class="fas fa-times text-danger me-2"></i><s>JWT Tokens</s></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Arrow -->
+                                <div class="col-md-1 text-center">
+                                    <i class="fas fa-arrow-right fa-2x text-muted"></i>
+                                </div>
+
+                                <!-- Car Service -->
+                                <div class="col-md-3">
+                                    <div class="card border-info">
+                                        <div class="card-header bg-info text-white text-center">
+                                            <h6 class="mb-0">
+                                                <i class="fas fa-car me-2"></i>Car Service
+                                            </h6>
+                                            <small>Porta 3002</small>
+                                        </div>
+                                        <div class="card-body">
+                                            <ul class="list-unstyled mb-0 small">
+                                                <li><i class="fas fa-check text-success me-2"></i>CRUD Carros</li>
+                                                <li><i class="fas fa-check text-success me-2"></i>SQLite DB</li>
+                                                <li><i class="fas fa-check text-success me-2"></i>Estatísticas</li>
+                                                <li><i class="fas fa-check text-success me-2"></i>Paginação</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Flow Description -->
+                            <div class="row mt-4">
+                                <div class="col-12 text-center">
+                                    <div class="alert alert-info">
+                                        <h6 class="mb-2">
+                                            <i class="fas fa-info-circle me-2"></i>Fluxo de Autenticação
+                                        </h6>
+                                        <p class="mb-0 small">
+                                            <strong>1.</strong> Usuário faz login no Web Service →
+                                            <strong>2.</strong> Web Service valida no Auth Service →
+                                            <strong>3.</strong> Auth Service cria sessão em memória →
+                                            <strong>4.</strong> Session ID armazenado em cookie →
+                                            <strong>5.</strong> Requisições usam Session ID para validação
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service Details -->
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                <i class="fas fa-desktop fa-lg text-primary"></i>
+                            </div>
+                            <h5>Web Service</h5>
+                            <p class="text-muted small">
+                                Interface do usuário com templates EJS e Bootstrap. 
+                                Gerencia cookies de sessão e comunica com outros serviços.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                <i class="fas fa-shield-alt fa-lg text-warning"></i>
+                            </div>
+                            <h5>Auth Service</h5>
+                            <p class="text-muted small">
+                                Gerencia autenticação com sessões em memória. 
+                                Mais simples e eficiente que JWT para apps locais.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <div class="bg-info bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                <i class="fas fa-car fa-lg text-info"></i>
+                            </div>
+                            <h5>Car Service</h5>
+                            <p class="text-muted small">
+                                API REST para gerenciar carros com SQLite. 
+                                CRUD completo, busca, paginação e estatísticas.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cars Preview -->
+        <% if (cars && cars.length > 0) { %>
+        <section class="py-5">
+            <div class="container">
+                <div class="row text-center mb-4">
+                    <div class="col-12">
+                        <h2 class="display-6 fw-bold mb-3">
+                            <i class="fas fa-star me-2"></i>Carros em Destaque
+                        </h2>
+                        <p class="lead text-muted">Alguns dos veículos cadastrados no sistema</p>
+                    </div>
+                </div>
+                
+                <div class="row g-4">
+                    <% cars.forEach(car => { %>
+                    <div class="col-md-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <i class="fas fa-car me-2 text-primary"></i>
+                                    <%= car.marca %> <%= car.modelo %>
+                                </h5>
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                        <small class="text-muted">
+                                            <i class="fas fa-calendar me-1"></i>
+                                            <strong>Ano:</strong> <%= car.ano %>
+                                        </small>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted">
+                                            <i class="fas fa-palette me-1"></i>
+                                            <strong>Cor:</strong> <%= car.cor %>
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="h5 text-success mb-0">
+                                        <i class="fas fa-dollar-sign me-1"></i>
+                                        R$ <%= car.preco.toLocaleString('pt-BR') %>
+                                    </span>
+                                    <span class="badge bg-<%= car.disponivel ? 'success' : 'secondary' %>">
+                                        <%= car.disponivel ? 'Disponível' : 'Indisponível' %>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <% }); %>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <a href="/login" class="btn btn-primary btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>
+                        Fazer Login para Ver Todos
+                    </a>
+                </div>
+            </div>
+        </section>
+        <% } %>
+
+        <!-- CTA Section -->
+        <section class="py-5 bg-primary text-white">
+            <div class="container text-center">
+                <h2 class="display-6 fw-bold mb-3">Pronto para Começar?</h2>
+                <p class="lead mb-4">
+                    Sistema completo de microserviços com autenticação por sessão. 
+                    Simples, rápido e eficiente.
+                </p>
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="p-3 bg-white bg-opacity-10 rounded">
+                                    <h6><i class="fas fa-user-shield me-2"></i>Admin</h6>
+                                    <p class="mb-0 small">admin@carros.com / admin123</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-3 bg-white bg-opacity-10 rounded">
+                                    <h6><i class="fas fa-user me-2"></i>Usuário</h6>
+                                    <p class="mb-0 small">user@carros.com / user123</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <a href="/login" class="btn btn-light btn-lg me-3">
+                        <i class="fas fa-sign-in-alt me-2"></i>Acessar Sistema
+                    </a>
+                    <a href="/docs.html" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-book me-2"></i>Ver Documentação
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h6 class="mb-0">
+                        <i class="fas fa-microchip me-2"></i>
+                        Car Microservices - Sistema Simples
+                    </h6>
+                    <small class="text-muted">Autenticação por Sessão • Node.js • SQLite</small>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <small class="text-muted">
+                        <i class="fas fa-code me-1"></i>
+                        Desenvolvido com ❤️ usando microserviços simples
+                    </small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

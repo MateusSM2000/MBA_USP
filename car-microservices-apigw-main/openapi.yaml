@@ -1,0 +1,476 @@
+openapi: 3.0.3
+info:
+  title: Car Microservices API
+  description: |
+    Sistema de microserviços para gerenciamento de carros com arquitetura distribuída.
+    
+    ## Arquitetura
+    - **API Gateway**: Ponto único de entrada (porta 4000)
+    - **Auth Service**: Autenticação e autorização (porta 4001)
+    - **Car Service**: CRUD de carros (porta 4002)
+    - **Frontend Service**: Interface web (porta 4003)
+    
+    ## Autenticação
+    Sistema baseado em sessões com cookies. Não utiliza JWT.
+    
+    ## Rate Limiting
+    - 1000 requisições por 15 minutos por IP
+    
+  version: 1.0.0
+  contact:
+    name: Car Microservices Team
+    email: admin@carros.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:4000
+    description: API Gateway (Desenvolvimento)
+  - url: http://localhost:4001
+    description: Auth Service (Direto)
+  - url: http://localhost:4002
+    description: Car Service (Direto)
+
+tags:
+  - name: Authentication
+    description: Operações de autenticação e autorização
+  - name: Cars
+    description: Operações CRUD para carros
+  - name: Health
+    description: Health checks dos serviços
+
+paths:
+  # Authentication Endpoints
+  /login:
+    post:
+      tags:
+        - Authentication
+      summary: Autenticar usuário
+      description: Realiza login do usuário e cria sessão
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  maxLength: 100
+                  example: admin@carros.com
+                password:
+                  type: string
+                  maxLength: 50
+                  example: admin123
+      responses:
+        '302':
+          description: Login bem-sucedido, redirecionamento para dashboard
+          headers:
+            Set-Cookie:
+              description: Cookie de sessão
+              schema:
+                type: string
+                example: sessionId=abc123; HttpOnly; Path=/
+            Location:
+              description: URL de redirecionamento
+              schema:
+                type: string
+                example: /dashboard
+        '400':
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Credenciais inválidas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /logout:
+    post:
+      tags:
+        - Authentication
+      summary: Encerrar sessão
+      description: Realiza logout do usuário e remove sessão
+      security:
+        - sessionAuth: []
+      responses:
+        '302':
+          description: Logout bem-sucedido, redirecionamento para login
+          headers:
+            Location:
+              description: URL de redirecionamento
+              schema:
+                type: string
+                example: /login
+        '401':
+          description: Não autenticado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # Car Endpoints
+  /api/cars:
+    get:
+      tags:
+        - Cars
+      summary: Listar carros
+      description: Retorna lista paginada de carros com filtros opcionais
+      parameters:
+        - name: page
+          in: query
+          description: Número da página
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          description: Itens por página
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+        - name: search
+          in: query
+          description: Termo de busca (marca ou modelo)
+          schema:
+            type: string
+            maxLength: 100
+      responses:
+        '200':
+          description: Lista de carros
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Car'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+
+  /cars:
+    post:
+      tags:
+        - Cars
+      summary: Criar novo carro
+      description: Cria um novo carro (apenas administradores)
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CarInput'
+      responses:
+        '302':
+          description: Carro criado com sucesso, redirecionamento
+          headers:
+            Location:
+              description: URL de redirecionamento
+              schema:
+                type: string
+                example: /cars?success=Carro%20criado%20com%20sucesso!
+        '400':
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Não autenticado
+        '403':
+          description: Acesso negado (não é administrador)
+
+  /api/cars/{id}:
+    get:
+      tags:
+        - Cars
+      summary: Obter carro por ID
+      description: Retorna detalhes de um carro específico
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do carro
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: Detalhes do carro
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Car'
+        '404':
+          description: Carro não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /cars/{id}:
+    post:
+      tags:
+        - Cars
+      summary: Atualizar ou deletar carro
+      description: Atualiza ou deleta um carro usando method override
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do carro
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              oneOf:
+                - allOf:
+                    - $ref: '#/components/schemas/CarInput'
+                    - type: object
+                      properties:
+                        _method:
+                          type: string
+                          enum: [PUT]
+                - type: object
+                  properties:
+                    _method:
+                      type: string
+                      enum: [DELETE]
+      responses:
+        '302':
+          description: Operação bem-sucedida, redirecionamento
+          headers:
+            Location:
+              description: URL de redirecionamento
+              schema:
+                type: string
+        '400':
+          description: Dados inválidos
+        '401':
+          description: Não autenticado
+        '403':
+          description: Acesso negado
+        '404':
+          description: Carro não encontrado
+
+  # Health Check Endpoints
+  /gateway/health:
+    get:
+      tags:
+        - Health
+      summary: Health check do API Gateway
+      description: Verifica status do API Gateway
+      responses:
+        '200':
+          description: Gateway funcionando
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: healthy
+                  service:
+                    type: string
+                    example: api-gateway
+                  timestamp:
+                    type: string
+                    format: date-time
+
+  /gateway/services:
+    get:
+      tags:
+        - Health
+      summary: Status de todos os serviços
+      description: Verifica status de todos os microserviços
+      responses:
+        '200':
+          description: Status dos serviços
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  gateway:
+                    $ref: '#/components/schemas/ServiceStatus'
+                  auth:
+                    $ref: '#/components/schemas/ServiceStatus'
+                  cars:
+                    $ref: '#/components/schemas/ServiceStatus'
+                  frontend:
+                    $ref: '#/components/schemas/ServiceStatus'
+
+components:
+  securitySchemes:
+    sessionAuth:
+      type: apiKey
+      in: cookie
+      name: sessionId
+      description: Autenticação baseada em sessão via cookie
+
+  schemas:
+    Car:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID único do carro
+          example: 1
+        marca:
+          type: string
+          description: Marca do carro
+          maxLength: 50
+          example: Toyota
+        modelo:
+          type: string
+          description: Modelo do carro
+          maxLength: 50
+          example: Corolla
+        ano:
+          type: integer
+          description: Ano de fabricação
+          minimum: 1900
+          maximum: 2030
+          example: 2023
+        cor:
+          type: string
+          description: Cor do carro
+          maxLength: 30
+          example: Branco
+        preco:
+          type: number
+          format: decimal
+          description: Preço do carro
+          minimum: 0
+          example: 85000.00
+        disponivel:
+          type: integer
+          description: Status de disponibilidade (0 = não, 1 = sim)
+          enum: [0, 1]
+          example: 1
+        created_at:
+          type: string
+          format: date-time
+          description: Data de criação
+          example: "2024-01-15 10:30:00"
+
+    CarInput:
+      type: object
+      required:
+        - marca
+        - modelo
+        - ano
+        - cor
+        - preco
+      properties:
+        marca:
+          type: string
+          maxLength: 50
+          example: Toyota
+        modelo:
+          type: string
+          maxLength: 50
+          example: Corolla
+        ano:
+          type: integer
+          minimum: 1900
+          maximum: 2030
+          example: 2023
+        cor:
+          type: string
+          maxLength: 30
+          example: Branco
+        preco:
+          type: number
+          format: decimal
+          minimum: 0
+          example: 85000.00
+        disponivel:
+          type: integer
+          enum: [0, 1]
+          default: 1
+
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+          description: Página atual
+          example: 1
+        limit:
+          type: integer
+          description: Itens por página
+          example: 10
+        total:
+          type: integer
+          description: Total de itens
+          example: 25
+        pages:
+          type: integer
+          description: Total de páginas
+          example: 3
+
+    ServiceStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [healthy, unhealthy]
+          example: healthy
+        port:
+          type: integer
+          example: 4001
+        url:
+          type: string
+          example: http://localhost:4001
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Tipo do erro
+          example: Validation Error
+        message:
+          type: string
+          description: Mensagem de erro
+          example: Email é obrigatório
+        details:
+          type: object
+          description: Detalhes adicionais do erro
+          additionalProperties: true
+
+security:
+  - sessionAuth: []

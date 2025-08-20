@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sistema de Carros</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="fas fa-microchip me-2"></i>Car Microservices
+            </a>
+            
+            <div class="navbar-nav ms-auto">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user me-1"></i><%= user.name %>
+                        <% if (user.role === 'admin') { %>
+                        <span class="badge bg-warning ms-1">Admin</span>
+                        <% } %>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <form action="/logout" method="POST" class="d-inline">
+                                <button type="submit" class="dropdown-item">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Sair
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="display-6 fw-bold">
+                    <i class="fas fa-tachometer-alt me-2 text-primary"></i>Dashboard
+                </h1>
+                <p class="lead text-muted">Bem-vindo, <%= user.name %>!</p>
+            </div>
+        </div>
+
+        <!-- Admin Stats -->
+        <% if (user.role === 'admin' && stats) { %>
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="card bg-primary text-white h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="fw-bold"><%= stats.total %></h3>
+                                <p class="mb-0">Total de Carros</p>
+                            </div>
+                            <div>
+                                <i class="fas fa-car fa-2x opacity-75"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card bg-success text-white h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="fw-bold"><%= stats.disponiveis %></h3>
+                                <p class="mb-0">Disponíveis</p>
+                            </div>
+                            <div>
+                                <i class="fas fa-check-circle fa-2x opacity-75"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card bg-info text-white h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="fw-bold">R$ <%= stats.preco_medio.toLocaleString('pt-BR') %></h3>
+                                <p class="mb-0">Preço Médio</p>
+                            </div>
+                            <div>
+                                <i class="fas fa-dollar-sign fa-2x opacity-75"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card bg-warning text-white h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="fw-bold"><%= stats.marcas_populares.length %></h3>
+                                <p class="mb-0">Marcas</p>
+                            </div>
+                            <div>
+                                <i class="fas fa-tags fa-2x opacity-75"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Popular Brands -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-bar me-2"></i>Marcas Mais Populares
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <% if (stats.marcas_populares && stats.marcas_populares.length > 0) { %>
+                        <div class="row">
+                            <% stats.marcas_populares.forEach((marca, index) => { %>
+                            <div class="col-md-2 mb-3 text-center">
+                                <div class="p-3 border rounded">
+                                    <h4 class="text-primary"><%= marca.quantidade %></h4>
+                                    <p class="mb-0"><%= marca.marca %></p>
+                                </div>
+                            </div>
+                            <% }); %>
+                        </div>
+                        <% } else { %>
+                        <p class="text-muted">Nenhuma marca encontrada</p>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% } %>
+
+        <!-- Quick Actions -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-bolt me-2"></i>Ações Rápidas
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <a href="/cars" class="btn btn-outline-primary w-100 btn-lg">
+                                    <i class="fas fa-list me-2"></i>Ver Todos os Carros
+                                </a>
+                            </div>
+                            <% if (user.role === 'admin') { %>
+                            <div class="col-md-4 mb-3">
+                                <a href="/cars/new" class="btn btn-outline-success w-100 btn-lg">
+                                    <i class="fas fa-plus me-2"></i>Adicionar Novo Carro
+                                </a>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <a href="/cars?search=" class="btn btn-outline-info w-100 btn-lg">
+                                    <i class="fas fa-search me-2"></i>Buscar Carros
+                                </a>
+                            </div>
+                            <% } else { %>
+                            <div class="col-md-4 mb-3">
+                                <a href="/cars?search=" class="btn btn-outline-info w-100 btn-lg">
+                                    <i class="fas fa-search me-2"></i>Buscar Carros
+                                </a>
+                            </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Info -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h6 class="mb-1">
+                                    <i class="fas fa-user me-2"></i>Informações do Usuário
+                                </h6>
+                                <p class="mb-0">
+                                    <strong>Nome:</strong> <%= user.name %> | 
+                                    <strong>Email:</strong> <%= user.email %> | 
+                                    <strong>Tipo:</strong> 
+                                    <span class="badge bg-<%= user.role === 'admin' ? 'warning' : 'primary' %>">
+                                        <%= user.role === 'admin' ? 'Administrador' : 'Usuário' %>
+                                    </span>
+                                </p>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <form action="/logout" method="POST" class="d-inline">
+                                    <button type="submit" class="btn btn-outline-danger">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Sair
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Session Info (Debug) -->
+        <% if (user.role === 'admin') { %>
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card border-info">
+                    <div class="card-header bg-info text-white">
+                        <h6 class="mb-0">
+                            <i class="fas fa-info-circle me-2"></i>Informações de Sessão (Admin)
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="mb-1"><strong>Sistema de Autenticação:</strong> Sessões em Memória</p>
+                                <p class="mb-1"><strong>Tipo:</strong> Sem JWT (Simplificado)</p>
+                                <p class="mb-0"><strong>Ideal para:</strong> Aplicações Locais</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-1"><strong>Serviços Ativos:</strong> 3 (Auth, Car, Web)</p>
+                                <p class="mb-1"><strong>Banco de Dados:</strong> SQLite</p>
+                                <p class="mb-0"><strong>Performance:</strong> 5x mais rápido que JWT</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% } %>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
