@@ -1,0 +1,33 @@
+---
+- name: Teste de conectividade SSH
+  hosts: all
+  gather_facts: yes
+  
+  tasks:
+    - name: Verificar conectividade
+      ping:
+      
+    - name: Mostrar informações do sistema
+      debug:
+        msg: "Host: {{ inventory_hostname }} - OS: {{ ansible_distribution }} {{ ansible_distribution_version }}"
+    
+    - name: Instalar pacote de teste
+      apt:
+        name: htop
+        state: present
+        update_cache: yes
+      
+    - name: Criar arquivo de teste
+      copy:
+        content: "Teste executado em {{ ansible_date_time.iso8601 }}"
+        dest: /tmp/ansible-test.txt
+        
+    - name: Verificar arquivo criado
+      stat:
+        path: /tmp/ansible-test.txt
+      register: test_file
+      
+    - name: Mostrar resultado
+      debug:
+        msg: "Arquivo de teste criado com sucesso!"
+      when: test_file.stat.exists

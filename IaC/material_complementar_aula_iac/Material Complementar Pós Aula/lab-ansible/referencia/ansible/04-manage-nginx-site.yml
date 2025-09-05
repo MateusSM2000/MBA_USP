@@ -1,0 +1,78 @@
+---
+- name: Gerenciar página do Nginx
+  hosts: webservers
+  become: yes
+  vars:
+    site_name: "mysite"
+    site_path: "/var/www/{{ site_name }}"
+    
+  tasks:
+#    - name: Verificar se Nginx está instalado
+#      command: which nginx
+#      register: nginx_check
+#      failed_when: nginx_check.rc != 0
+#      changed_when: false
+
+
+    - name: Criar diretório do site
+      file:
+        path: "{{ site_path }}"
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: '0755'
+
+
+    - name: Criar página index.html
+      copy:
+        content: |
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <title>MBA USP ESALQ</title>
+              <meta http-equiv="refresh" content="30">
+          </head>
+          <body>
+              <h1>MBA USP ESALQr</h1>
+              <p>Infra as Code </p>
+          </body>
+          </html>
+        dest: "{{ site_path }}/index.html"
+        owner: www-data
+        group: www-data
+        mode: '0644'
+      notify: reload nginx
+
+    - name: Criar backup da página atual
+      command: "cp {{ site_path }}/index.html {{ site_path }}/index.html.backup.{{ ansible_date_time.epoch }}"
+      ignore_errors: yes
+
+    - name: Verificar sintaxe do Nginx
+      command: nginx -t
+      register: nginx_syntax
+      changed_when: false
+
+    - name: Recarregar Nginx se configuração estiver OK
+      shell: /etc/init.d/nginx start
+      
+    - name: Testar conectividade HTTP
+      uri:
+        url: "http://localhost"
+        method: GET
+        status_code: 200
+      register: http_test
+      retries: 3
+      delay: 2
+
+    - name: Exibir resultado do teste HTTP
+      debug:
+        msg: "Site está respondendo: {{ http_test.status }} - {{ http_test.msg }}"
+
+    - name: Listar arquivos do site
+      command: "ls -la {{ site_path }}"
+      register: site_files
+      changed_when: false
+
+  handlers:
+    - name: reload nginx
+      shell: /etc/init.d/nginx restart 

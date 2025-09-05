@@ -1,0 +1,61 @@
+---
+- name: Gerenciar diretórios e permissões
+  hosts: webservers
+  become: yes
+  tasks:
+    - name: Criar diretório de aplicação
+      file:
+        path: /opt/myapp
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Criar diretório de logs
+      file:
+        path: /var/log/myapp
+        state: directory
+        owner: root
+        group: root
+        mode: '0750'
+
+    - name: Criar diretório de dados com permissões específicas
+      file:
+        path: /data/shared
+        state: directory
+        owner: root
+        group: root
+        mode: '0777'
+
+    - name: Criar arquivo de configuração
+      file:
+        path: /opt/myapp/config.txt
+        state: touch
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Adicionar conteúdo ao arquivo de configuração
+      lineinfile:
+        path: /opt/myapp/config.txt
+        line: "{{ item }}"
+        create: yes
+      with_items:
+        - "# Configuração da aplicação"
+        - "app_name=MyApp"
+        - "log_level=INFO"
+        - "data_path=/data/shared"
+
+    - name: Verificar permissões dos diretórios criados
+      command: "ls -la {{ item }}"
+      register: dir_permissions
+      with_items:
+        - /opt/myapp
+        - /var/log/myapp
+        - /data/shared
+      changed_when: false
+
+    - name: Exibir permissões
+      debug:
+        msg: "{{ item.stdout_lines }}"
+      with_items: "{{ dir_permissions.results }}"

@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  ansible-control:
+    build: 
+      context: .
+      dockerfile: Dockerfile.ssh
+    container_name: ansible-control
+    hostname: ansible-control
+    networks:
+      - ssh_network
+    ports:
+      - "2221:22"
+    volumes:
+      - ./ssh_keys:/root/.ssh
+      - ./ansible:/ansible
+    environment:
+      - ROOT_PASSWORD=pass123
+    stdin_open: true
+    tty: true
+
+  target-server1:
+    build:
+      context: .
+      dockerfile: Dockerfile.ssh
+    container_name: target-server
+    hostname: target-server1
+    networks:
+      - ssh_network
+    ports:
+      - "2222:22"
+      - "8080:80"
+    volumes:
+      - ./ssh_keys:/root/.ssh
+      - ./ansible:/ansible
+    environment:
+      - ROOT_PASSWORD=pass123
+    stdin_open: true
+    tty: true
+
+  target-server2:
+    build:
+      context: .
+      dockerfile: Dockerfile.ssh
+    container_name: target-server2
+    hostname: target-server2
+    networks:
+      - ssh_network
+    ports:
+      - "2223:22"
+      - "2121:21"
+      - "8081:80"
+    volumes:
+      - ./ssh_keys:/root/.ssh
+      - ./ansible:/ansible
+    environment:
+      - ROOT_PASSWORD=pass123
+    stdin_open: true
+    tty: true
+
+  target-server3:
+    build:
+      context: .
+      dockerfile: Dockerfile.ssh
+    container_name: target-server3
+    hostname: target-server3
+    networks:
+      - ssh_network
+    ports:
+      - "2224:22"
+    volumes:
+      - ./ssh_keys:/root/.ssh
+      - ./ansible:/ansible
+    environment:
+      - ROOT_PASSWORD=pass123
+    stdin_open: true
+    tty: true
+
+networks:
+  ssh_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

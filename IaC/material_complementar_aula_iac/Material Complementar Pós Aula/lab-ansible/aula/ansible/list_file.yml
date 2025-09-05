@@ -1,0 +1,20 @@
+---
+- name: Verificar /etc/passwd e exibir conteúdo
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Verificar se o arquivo /etc/passwd existe
+      ansible.builtin.stat:
+        path: /etc/passwd
+      register: passwd_file
+
+    - name: Exibir conteúdo do /etc/passwd
+      ansible.builtin.command: cat /etc/passwd
+      when: passwd_file.stat.exists
+      register: passwd_content
+
+    - name: Mostrar resultado do cat
+      debug:
+        msg: "{{ passwd_content.stdout }}"
+      when: passwd_file.stat.exists

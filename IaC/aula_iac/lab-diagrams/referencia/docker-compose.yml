@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  diagrams-lab:
+    build: .
+    container_name: diagrams-lab
+    volumes:
+      - ./src:/app/src
+      - ./output:/app/output
+    working_dir: /app
+    command: tail -f /dev/null
+    environment:
+      - PYTHONPATH=/app

@@ -1,0 +1,19 @@
+---
+- name: Verificar se o Nginx está instalado
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Coletar pacotes instalados
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Exibir mensagem se o nginx está instalado
+      debug:
+        msg: "O nginx está instalado"
+      when: "'nginx' in ansible_facts.packages"
+
+    - name: Exibir mensagem se o nginx NÃO está instalado
+      debug:
+        msg: "O nginx NÃO está instalado"
+      when: "'nginx' not in ansible_facts.packages"

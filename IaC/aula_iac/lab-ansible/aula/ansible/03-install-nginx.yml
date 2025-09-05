@@ -1,0 +1,87 @@
+---
+- name: Instalar e configurar Nginx
+  hosts: webservers
+  become: yes
+  tasks:
+    - name: Instalar Nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: Criar diretório do site
+      file:
+        path: /var/www/mysite
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: '0755'
+
+    - name: Criar página HTML simples
+      copy:
+        content: |
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <title>MBA USP ESALQ</title>
+              <style>
+                  body { font-family: Arial, sans-serif; margin: 40px; }
+                  .container { max-width: 800px; margin: 0 auto; }
+                  h1 { color: #333; }
+                  .info { background: #f4f4f4; padding: 20px; border-radius: 5px; }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <h1>Bem-vindo ao meu site!</h1>
+                  <div class="info">
+                      <p>Esta página foi criada automaticamente usando Ansible.</p>
+                      <p>Servidor: {{ ansible_hostname }}</p>
+                      <p>Sistema: {{ ansible_distribution }} {{ ansible_distribution_version }}</p>
+                      <p>Data de criação: {{ ansible_date_time.date }}</p>
+                  </div>
+              </div>
+          </body>
+          </html>
+        dest: /var/www/mysite/index.html
+        owner: www-data
+        group: www-data
+        mode: '0644'
+
+    - name: Configurar virtual host do Nginx
+      copy:
+        content: |
+          server {
+              listen 80;
+              server_name localhost;
+              root /var/www/mysite;
+              index index.html;
+              
+              location / {
+                  try_files $uri $uri/ =404;
+              }
+              
+              access_log /var/log/nginx/mysite_access.log;
+              error_log /var/log/nginx/mysite_error.log;
+          }
+        dest: /etc/nginx/sites-available/mysite
+        backup: yes
+
+    - name: Habilitar site
+      file:
+        src: /etc/nginx/sites-available/mysite
+        dest: /etc/nginx/sites-enabled/mysite
+        state: link
+
+    - name: Remover site padrão
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+
+    - name: Testar configuração do Nginx
+      command: nginx -t
+      register: nginx_test
+      changed_when: false
+
+    - name: Iniciar e habilitar Nginx
+      shell: /etc/init.d/nginx start
